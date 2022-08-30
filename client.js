@@ -14,9 +14,9 @@ function runTest() {
 
   const length = mat.rows * mat.cols;
   const shab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * length);
-  const res = new Int32Array(shab);
+  const ar = new Int32Array(shab);
 
-  console.log({ mat, res });
+  console.log({ mat, ar });
 
   const tasks = segments;
   let numTasks = 0;
@@ -34,7 +34,7 @@ function runTest() {
       pool[i].postMessage({
         command: "run",
         mat,
-        res,
+        ar,
         segment,
       });
     }
@@ -65,7 +65,7 @@ function runTest() {
                 command: "run",
                 segment,
                 mat,
-                res,
+                ar,
               });
             }
           }

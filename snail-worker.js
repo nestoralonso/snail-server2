@@ -34,11 +34,11 @@ function copySegment({ mat, ar, segment } = { mat: [], ar: [], segment: [] }) {
 
 
 self.onmessage = function (msg) {
-  const { command, segment, mat, res } = msg.data;
+  const { command, segment, mat, ar } = msg.data;
   console.log("🦊", JSON.stringify(segment));
   if (command === "run") {
-    console.log("Running w/", mat, res);
-    const arI = copySegment({ mat, ar: res, segment });
+    console.log("Running w/", {mat, ar, segment});
+    const arI = copySegment({ mat, ar, segment });
     self.postMessage({
       type: "result",
       arI,
