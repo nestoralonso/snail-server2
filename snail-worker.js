@@ -9,6 +9,8 @@ function getm(fm, i, j) {
 }
 
 function copySegment({ mat, ar, segment } = { mat: [], ar: [], segment: [] }) {
+  console.log("🦊>>>> SANITY", { mat, ar, segment })
+
   if (!segment || !segment.length || !mat || !mat.length || !ar || !ar.length) {
     console.log("Something went wrong");
     return -1;
