@@ -8,10 +8,10 @@ function getElement(fm, i, j) {
   return data[ix];
 }
 
-function copySegment({ mat, array, segment } = { mat: [], array: [], segment: [] }) {
+function copySegment({ mat, array, segment } = { mat: [], array: [] }) {
   console.log("🦊>>>> SANITY", { mat, ar: array}, JSON.stringify(segment))
 
-  if (!segment || !segment.length || !mat || !mat.length || !array || !array.length) {
+  if (!segment || !segment.length) {
     console.log("Something went wrong");
     return -1;
   }
