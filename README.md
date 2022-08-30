@@ -1,6 +1,2 @@
-# Example
+To make it work on codesandbox, click "Open in a new Tab" in the minibrowser:
 
-To run this example:
-
-- `npm install` or `yarn`
-- `npm run dev` or `yarn dev`
