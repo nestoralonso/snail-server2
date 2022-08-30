@@ -13,7 +13,7 @@ function copySegment({mat, ar, segment}={mat: null, ar: null, segment: []}) {
     console.log("Something went wrong");
     return -1;
   }
-  const [dir, arI, ci, cj, minI, maxI, minJ, maxJ] = segment;
+  let [dir, arI, ci, cj, minI, maxI, minJ, maxJ] = segment;
   console.log("🦊>>>> ~ copySegment ~ ", {dir, arI, ci, cj, minI, maxI, minJ, maxJ})
 
 
