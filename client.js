@@ -2,7 +2,14 @@
 const button = document.querySelector("button");
 button?.addEventListener("click", runTest);
 
-function runTest() {
+/**
+ * {Event} e
+*/
+function runTest(e) {
+  const { rows, cols } = e.target.dataset;
+  console.log("🦊>>>> ~ runTest ~ { rows, cols }", { rows, cols })
+
+  return;
   const NUM_WORKERS = 4;
 
   let mat = createMatrix([
