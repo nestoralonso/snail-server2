@@ -9,7 +9,7 @@ function getElement(fm, i, j) {
 }
 
 function copySegment({ mat, array, segment } = { mat: [], array: [], segment: [] }) {
-  console.log("🦊>>>> SANITY", { mat, ar: array, segment })
+  console.log("🦊>>>> SANITY", { mat, ar: array}, JSON.stringify(segment))
 
   if (!segment || !segment.length || !mat || !mat.length || !array || !array.length) {
     console.log("Something went wrong");
