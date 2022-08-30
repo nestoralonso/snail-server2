@@ -6,8 +6,9 @@ function runTest() {
   const NUM_WORKERS = 4;
 
   let mat = createMatrix([
-    [0,1],
-    [3,2],
+    [0, 1, 2],
+    [7, 8, 3],
+    [6, 5, 4],
   ]);
   let segments = snail(mat);
 
@@ -45,7 +46,8 @@ function runTest() {
     const worker = new Worker("snail-worker.js");
     pool.push(worker);
     worker.onmessage = function (msg) {
-      switch (msg.data.type) {
+      const { type, arI} = msg.data;
+      switch (type) {
         case "result":
           tasksCompleted++;
           if (tasksCompleted === numTasks) {
@@ -57,6 +59,7 @@ function runTest() {
             alert(`Done. in ${timeTaken} ms`);
           } else {
             if (tasks.length > 0) {
+              console.log("👍🏽", {arI});
               const task = tasks.shift();
               this.postMessage({
                 command: "run",

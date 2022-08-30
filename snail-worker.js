@@ -8,8 +8,15 @@ function getm(fm, i, j) {
   return data[ix];
 }
 
-function copySegment({mat, ar, segment: [dir, arI, ci, cj, minI, maxI, minJ, maxJ]}) {
+function copySegment({mat, ar, segment}={mat: null, ar: null, segment: []}) {
+  if (!segment || !segment.length) {
+    console.log("Something went wrong");
+    return -1;
+  }
+  const [dir, arI, ci, cj, minI, maxI, minJ, maxJ] = segment;
   console.log("🦊>>>> ~ copySegment ~ ", {dir, arI, ci, cj, minI, maxI, minJ, maxJ})
+
+
   const [di, dj] = dir;
   console.log("🦊>>>> ~ copySegment ~ { ar, mat }", { ar, mat })
 
