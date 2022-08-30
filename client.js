@@ -1,6 +1,6 @@
 //@ts-check
-const button = document.querySelector("button");
-button?.addEventListener("click", runTest);
+const buttons = document.querySelectorAll(".run-test");
+buttons.forEach(b => b.addEventListener("click", runTest));
 
 /**
  * {Event} e
