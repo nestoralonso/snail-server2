@@ -27,6 +27,7 @@ function runTest(e) {
   let tasksCompleted = 0;
 
   const pool = [];
+  performance.clearMarks("testStart");
   performance.mark("testStart");
   numTasks = tasks.length;
 
