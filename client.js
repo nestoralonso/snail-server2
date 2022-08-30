@@ -7,7 +7,9 @@ buttons.forEach(b => b.addEventListener("click", runTest));
 */
 function runTest(e) {
   const { rows, cols } = e.target.dataset;
-  e.target.disabled = true;
+  buttons.forEach(b => {
+     b.disabled = true;
+  });
   console.log("🦊>>>> ~ runTest ~ { rows, cols }", { rows, cols })
 
   const NUM_WORKERS = 4;
@@ -54,7 +56,9 @@ function runTest(e) {
         case "result":
           tasksCompleted++;
           if (tasksCompleted === numTasks) {
-            e.target.disabled = false;
+            buttons.forEach(b => {
+              b.disabled = false;
+           });
             console.log("🤑💯 ", array);
             console.timeEnd("snail-run");
             performance.mark("testEnd");
