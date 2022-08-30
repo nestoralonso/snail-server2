@@ -14,9 +14,9 @@ function runTest() {
 
   const length = mat.rows * mat.cols;
   const shab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * length);
-  const ar = new Int32Array(shab);
+  const array = new Int32Array(shab);
 
-  console.log({ mat, ar });
+  console.log({ mat, ar: array });
 
   const tasks = segments;
   let numTasks = 0;
@@ -34,7 +34,7 @@ function runTest() {
       pool[i].postMessage({
         command: "run",
         mat,
-        ar,
+        array,
         segment,
       });
     }
@@ -46,12 +46,12 @@ function runTest() {
     const worker = new Worker("snail-worker.js");
     pool.push(worker);
     worker.onmessage = function (msg) {
-      const { type, arI} = msg.data;
+      const { type, arI } = msg.data;
       switch (type) {
         case "result":
           tasksCompleted++;
           if (tasksCompleted === numTasks) {
-            console.log("🤑💯 ", res);
+            console.log("🤑💯 ", array);
             console.timeEnd("snail-run");
             performance.mark("testEnd");
             performance.measure("runTest", "testStart", "testEnd");
@@ -59,13 +59,13 @@ function runTest() {
             alert(`Done. in ${timeTaken} ms`);
           } else {
             if (tasks.length > 0) {
-              console.log("👍🏽", {arI});
+              console.log("👍🏽", { arI });
               const segment = tasks.shift();
               this.postMessage({
                 command: "run",
                 segment,
                 mat,
-                ar,
+                array,
               });
             }
           }
