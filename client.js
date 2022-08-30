@@ -5,7 +5,10 @@ button?.addEventListener("click", runTest);
 function runTest() {
   const NUM_WORKERS = 4;
 
-  let mat = createRandMatrix(2, 2);
+  let mat = createMatrix([
+    [0,1],
+    [3,2],
+  ]);
   let segments = snail(mat);
 
   const length = mat.rows * mat.cols;
