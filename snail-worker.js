@@ -1,7 +1,7 @@
 //@ts-check
 var buffer;
 
-function getm(fm, i, j) {
+function getElement(fm, i, j) {
   const { data, cols } = fm;
 
   const ix = i * cols + j;
@@ -23,7 +23,7 @@ function copySegment({ mat, array, segment } = { mat: [], array: [], segment: []
   console.log("🦊>>>> ~ copySegment ~ { ar, mat }", { ar: array, mat })
 
   do {
-    array[arI] = getm(mat, ci, cj);
+    array[arI] = getElement(mat, ci, cj);
     ci += di;
     cj += dj;
     arI++;

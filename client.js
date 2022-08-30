@@ -16,7 +16,7 @@ function runTest() {
   const shab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * length);
   const array = new Int32Array(shab);
 
-  console.log({ mat, ar: array });
+  console.log({ mat, array });
 
   const tasks = segments;
   let numTasks = 0;
@@ -59,8 +59,8 @@ function runTest() {
             alert(`Done. in ${timeTaken} ms`);
           } else {
             if (tasks.length > 0) {
-              console.log("👍🏽", { arI });
               const segment = tasks.shift();
+              console.log("👍🏽", { arI, segment });
               this.postMessage({
                 command: "run",
                 segment,
