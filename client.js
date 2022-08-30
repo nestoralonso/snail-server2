@@ -10,18 +10,17 @@ function runTest(e) {
   buttons.forEach(b => {
      b.disabled = true;
   });
-  console.log("🦊>>>> ~ runTest ~ { rows, cols }", { rows, cols })
 
   const NUM_WORKERS = 4;
 
   let mat = createRandMatrix(parseInt(rows), parseInt(cols));
   let segments = snail(mat);
+  console.log("🤑 segments", segments.length)
 
   const length = mat.rows * mat.cols;
   const shab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * length);
   const array = new Int32Array(shab);
 
-  console.log({ mat, array });
 
   const tasks = segments;
   let numTasks = 0;
@@ -30,7 +29,6 @@ function runTest(e) {
   const pool = [];
   performance.mark("testStart");
   numTasks = tasks.length;
-  console.log("🦊>>>> ~ runTest ~ numTasks", numTasks)
 
   function run() {
     console.time("snail-run");
@@ -59,7 +57,6 @@ function runTest(e) {
             buttons.forEach(b => {
               b.disabled = false;
            });
-            console.log("🤑💯 ", array);
             console.timeEnd("snail-run");
             performance.mark("testEnd");
             performance.measure("runTest", "testStart", "testEnd");
@@ -68,7 +65,6 @@ function runTest(e) {
           } else {
             if (tasks.length > 0) {
               const segment = tasks.shift();
-              console.log("👍🏽", { arI, segment });
               this.postMessage({
                 command: "run",
                 segment,
