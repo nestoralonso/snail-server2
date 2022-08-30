@@ -8,23 +8,23 @@ function getm(fm, i, j) {
   return data[ix];
 }
 
-function copySegment({mat, ar, segment}={mat: null, ar: null, segment: []}) {
-  if (!segment || !segment.length) {
+function copySegment({ mat, ar, segment } = { mat: [], ar: [], segment: [] }) {
+  if (!segment || !segment.length || !mat || !mat.length || !ar || !ar.length) {
     console.log("Something went wrong");
     return -1;
   }
   let [dir, arI, ci, cj, minI, maxI, minJ, maxJ] = segment;
-  console.log("🦊>>>> ~ copySegment ~ ", {dir, arI, ci, cj, minI, maxI, minJ, maxJ})
+  console.log("🦊>>>> ~ copySegment ~ ", { dir, arI, ci, cj, minI, maxI, minJ, maxJ })
 
 
   const [di, dj] = dir;
   console.log("🦊>>>> ~ copySegment ~ { ar, mat }", { ar, mat })
 
   do {
-      ar[arI] = getm(mat, ci, cj);
-      ci += di;
-      cj += dj;
-      arI++;
+    ar[arI] = getm(mat, ci, cj);
+    ci += di;
+    cj += dj;
+    arI++;
   } while (ci >= minI && ci <= maxI && cj >= minJ && cj <= maxJ);
 
   return arI;
@@ -36,7 +36,7 @@ self.onmessage = function (msg) {
   console.log("🦊", JSON.stringify(segment));
   if (command === "run") {
     console.log("Run");
-    const arI = copySegment({ mat, ar: res, segment});
+    const arI = copySegment({ mat, ar: res, segment });
     self.postMessage({
       type: "result",
       arI,
