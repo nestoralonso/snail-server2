@@ -12,7 +12,7 @@ function runTest(e) {
 
   const NUM_WORKERS = 4;
 
-  let mat = createRandMatrix(rows, cols);
+  let mat = createRandMatrix(parseInt(rows), parseInt(cols));
   let segments = snail(mat);
 
   const length = mat.rows * mat.cols;
