@@ -28,19 +28,14 @@ function runTest(e) {
 
   const pool = [];
 
-  performance.clearMarks("testStart");
-  performance.clearMeasures("runTest");
-  performance.clearMeasures("testStart");
-  performance.clearMeasures("testEnd");
 
-  performance.mark("testStart");
   numTasks = tasks.length;
 
   function run() {
     console.time("snail-run");
-    for (let i = 0; i < NUM_WORKERS; i++) {
+    for (const worker of pool) {
       const segment = tasks.shift();
-      pool[i].postMessage({
+      worker.postMessage({
         command: "run",
         mat,
         array,
@@ -64,10 +59,7 @@ function runTest(e) {
               b.disabled = false;
            });
             console.timeEnd("snail-run");
-            performance.mark("testEnd");
-            performance.measure("runTest", "testStart", "testEnd");
-            const timeTaken = performance.getEntriesByName("runTest")[0].duration;
-            alert(`Done. in ${timeTaken} ms`);
+            alert(`Done. `);
           } else {
             if (tasks.length > 0) {
               const segment = tasks.shift();
