@@ -7,16 +7,12 @@ buttons.forEach(b => b.addEventListener("click", runTest));
 */
 function runTest(e) {
   const { rows, cols } = e.target.dataset;
+  e.target.disabled = true;
   console.log("🦊>>>> ~ runTest ~ { rows, cols }", { rows, cols })
 
-  return;
   const NUM_WORKERS = 4;
 
-  let mat = createMatrix([
-    [0, 1, 2],
-    [7, 8, 3],
-    [6, 5, 4],
-  ]);
+  let mat = createRandMatrix(rows, cols);
   let segments = snail(mat);
 
   const length = mat.rows * mat.cols;
@@ -58,6 +54,7 @@ function runTest(e) {
         case "result":
           tasksCompleted++;
           if (tasksCompleted === numTasks) {
+            e.target.disabled = false;
             console.log("🤑💯 ", array);
             console.timeEnd("snail-run");
             performance.mark("testEnd");
