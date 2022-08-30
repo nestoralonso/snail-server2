@@ -5,7 +5,7 @@ button?.addEventListener("click", runTest);
 function runTest() {
   const NUM_WORKERS = 4;
 
-  let mat = createRandMatrix(2, 3);
+  let mat = createRandMatrix(2, 2);
   let segments = snail(mat);
   const tasks = segments;
   let numTasks = 0;
@@ -22,7 +22,7 @@ function runTest() {
       const task = tasks.shift();
       pool[i].postMessage({
         command: "run",
-        task
+        segment: task
       });
     }
   }
@@ -45,7 +45,10 @@ function runTest() {
           } else {
             if (tasks.length > 0) {
               const task = tasks.shift();
-              this.postMessage(task);
+              this.postMessage({
+                command: "run",
+                segment: task
+              });
             }
           }
           break;
