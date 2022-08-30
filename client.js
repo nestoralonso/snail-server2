@@ -7,6 +7,13 @@ function runTest() {
 
   let mat = createRandMatrix(2, 2);
   let segments = snail(mat);
+
+  const length = mat.rows * mat.cols;
+  const shab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * length);
+  const res = new Int32Array(shab);
+
+  console.log({ mat, res });
+
   const tasks = segments;
   let numTasks = 0;
   let tasksCompleted = 0;
@@ -22,7 +29,9 @@ function runTest() {
       const task = tasks.shift();
       pool[i].postMessage({
         command: "run",
-        segment: task
+        segment: task,
+        mat,
+        res,
       });
     }
   }
@@ -37,6 +46,7 @@ function runTest() {
         case "result":
           tasksCompleted++;
           if (tasksCompleted === numTasks) {
+            console.log("🤑💯 ", res);
             console.timeEnd("snail-run");
             performance.mark("testEnd");
             performance.measure("runTest", "testStart", "testEnd");

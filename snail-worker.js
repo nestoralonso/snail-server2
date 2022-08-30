@@ -8,11 +8,10 @@ function getm(fm, i, j) {
   return data[ix];
 }
 
-function copySegment([dir, arI, ci, cj, minI, maxI, minJ, maxJ]) {
-  // console.log("🦊>>>> ~ copySegment ~ ", {dir, arI, ci, cj, minI, maxI, minJ, maxJ})
+function copySegment({mat, ar, segment: [dir, arI, ci, cj, minI, maxI, minJ, maxJ]}) {
+  console.log("🦊>>>> ~ copySegment ~ ", {dir, arI, ci, cj, minI, maxI, minJ, maxJ})
   const [di, dj] = dir;
-  const { ar, mat } = Piscina.workerData;
-  // console.log("🦊>>>> ~ copySegment ~ { ar, mat }", { ar, mat })
+  console.log("🦊>>>> ~ copySegment ~ { ar, mat }", { ar, mat })
 
   do {
       ar[arI] = getm(mat, ci, cj);
@@ -26,13 +25,14 @@ function copySegment([dir, arI, ci, cj, minI, maxI, minJ, maxJ]) {
 
 
 self.onmessage = function (msg) {
-  console.log(JSON.stringify(msg));
-  const { command, segment } = msg.data;
+  const { command, segment, mat, res } = msg.data;
   console.log("🦊", JSON.stringify(segment));
   if (command === "run") {
     console.log("Run");
+    const arI = copySegment({ mat, ar: res, segment});
     self.postMessage({
       type: "result",
+      arI,
     });
   }
 };
