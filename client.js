@@ -30,12 +30,12 @@ function runTest() {
   function run() {
     console.time("snail-run");
     for (let i = 0; i < NUM_WORKERS; i++) {
-      const task = tasks.shift();
+      const segment = tasks.shift();
       pool[i].postMessage({
         command: "run",
-        segment: task,
         mat,
         res,
+        segment,
       });
     }
   }
@@ -60,10 +60,12 @@ function runTest() {
           } else {
             if (tasks.length > 0) {
               console.log("👍🏽", {arI});
-              const task = tasks.shift();
+              const segment = tasks.shift();
               this.postMessage({
                 command: "run",
-                segment: task
+                segment,
+                mat,
+                res,
               });
             }
           }

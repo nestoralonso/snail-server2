@@ -35,7 +35,7 @@ self.onmessage = function (msg) {
   const { command, segment, mat, res } = msg.data;
   console.log("🦊", JSON.stringify(segment));
   if (command === "run") {
-    console.log("Run");
+    console.log("Running w/", mat, res);
     const arI = copySegment({ mat, ar: res, segment });
     self.postMessage({
       type: "result",
