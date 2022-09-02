@@ -30,8 +30,12 @@ const bigTestButton = document.querySelectorAll(".run-big-test");
 bigTestButton.forEach(b => b.addEventListener("click", runBigTest));
 
 async function loadIntArrayTestCase() {
-  const inputJson = await (await fetch("https://cd-audio-notes-dev.s3.amazonaws.com/input-10000.json")).json();
-  const outputJson = await (await fetch("https://cd-audio-notes-dev.s3.amazonaws.com/output-10000.json")).json();
+  const [inputReq, outputReq] = await Promise.all([
+    fetch("https://cd-audio-notes-dev.s3.amazonaws.com/input-10000.json"),
+    fetch("https://cd-audio-notes-dev.s3.amazonaws.com/output-10000.json"),
+  ]);
+  const inputJson = await inputReq.json();
+  const outputJson = await outputReq.json();
 
   const input = createCMatrix(inputJson);
   const output = createArray(outputJson);
@@ -39,6 +43,10 @@ async function loadIntArrayTestCase() {
 }
 
 async function runBigTest(e) {
-  const {input, output} = await loadIntArrayTestCase();
-  console.log({input, output})
+  const { input, output } = await loadIntArrayTestCase();
+  console.log({ input, output });
+  const ans = await asyncSnail(input);
+
+  const isEqual = equalIntArrays(ans, output);
+  console.log(`🥁🎉 And the result is `, {isEqual});
 }
