@@ -69,7 +69,7 @@ const DirectionName = new Map([
  * @param {CompactMatrix} m the source matrix
  * @returns {MatrixSegment[]}
  */
-function snail(m) {
+export function snail(m) {
     if (!m || m.rows < 1 || m.cols < 1) {
         return [];
     }
@@ -151,7 +151,7 @@ function copyMatrix(mJs, mInt32) {
     }
 }
 
-function createCMatrix(jsMatrix) {
+export function createCMatrix(jsMatrix) {
     let ix = 0;
     const rows = jsMatrix.length;
     const cols = jsMatrix?.[0]?.length ?? 0;
@@ -173,7 +173,7 @@ function createCMatrix(jsMatrix) {
     };
 }
 
-function createRandMatrix(rows, cols) {
+export function createRandMatrix(rows, cols) {
     let ix = 0;
     const sharedArrayBuffer = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * (rows * cols));
     const mInt32 = new Int16Array(sharedArrayBuffer);
@@ -192,7 +192,7 @@ function createRandMatrix(rows, cols) {
     };
 }
 
-function createArray(jsArray) {
+export function createIntArray(jsArray) {
     const sharedArrayBuffer = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * jsArray.length);
     const arInt32 = new Int16Array(sharedArrayBuffer);
 
@@ -203,7 +203,7 @@ function createArray(jsArray) {
     return arInt32;
 }
 
-function equalIntArrays(ab1, ab2) {
+export function equalIntArrays(ab1, ab2) {
     if (ab1.length !== ab2.length) return false;
     for (let i = 0; i < ab1.length; i++) {
         if (ab1[i] !== ab2[i]) return false;
@@ -299,7 +299,7 @@ function runSnailCb(shabMatrix, callback) {
     run();
 }
 
-const asyncSnail = promisify(runSnailCb);
+export const asyncSnail = promisify(runSnailCb);
 
 (async function testLolAsyncs() {
     console.log("Running snail test");
@@ -312,7 +312,7 @@ const asyncSnail = promisify(runSnailCb);
     console.log(`Results [${cMatrix.rows}, ${cMatrix.cols}]`, res);
 })
 
-function mat20x5() {
+export function mat20x5() {
 
     const m = [
         [1, 2, 3, 4, 5],
@@ -340,7 +340,7 @@ function mat20x5() {
     return m;
 }
 
-function mat4x3() {
+export function mat4x3() {
     return [
         [1, 2, 3],
         [10, 11, 4],
