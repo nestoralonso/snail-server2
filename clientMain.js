@@ -19,6 +19,10 @@ function runTest(e) {
   console.log("🤑 segments", segments.length)
 
   const length = mat.rows * mat.cols;
+
+  mat[0] = 0;
+  mat[length - 1] = 0x7FFF;
+
   const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
   const array = new Int16Array(shab);
 
@@ -58,7 +62,7 @@ function runTest(e) {
               b.disabled = false;
            });
             console.timeEnd("snail-run");
-            alert(`Done. `);
+            alert(`Done. first=${array[0]}, last=${array[length]}`);
           } else {
             if (tasks.length > 0) {
               const segment = tasks.shift();
