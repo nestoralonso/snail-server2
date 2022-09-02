@@ -14,13 +14,11 @@ function runTest(e) {
 
   const NUM_WORKERS = 4;
 
-  let mat = createRandMatrix(parseInt(rows), parseInt(cols));
+  // let mat = createRandMatrix(parseInt(rows), parseInt(cols));
+  console.log(`🦊 ${JSON.stringify(mat4x3(), null, 4)}`)
+  let mat = createCMatrix(mat4x3());
 
   const length = mat.rows * mat.cols;
-
-  // Sanity check, remove later
-  mat[0] = 0;
-  mat[length - 1] = 0x7FFF;
 
   let segments = snail(mat);
   console.log("🤑 segments", segments.length)
