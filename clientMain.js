@@ -64,3 +64,7 @@ async function runBigTest(e) {
   resultsTextBlock.forEach(e => e.textContent += `🥁🤑 Snail duration ${duration}`);
   resultsTextBlock.forEach(e => e.textContent += `🥁🤑 Results are ${isEqual}`);
 }
+
+console.log(window.report);
+console.log(window.jestLite);
+console.log(window.describe);
