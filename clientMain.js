@@ -1,5 +1,4 @@
 //@ts-check
-
 import { asyncSnail, createCMatrix, createIntArray, createRandMatrix, equalIntArrays } from "./snail3.js";
 
 /** @type {NodeListOf<HTMLButtonElement>} */
