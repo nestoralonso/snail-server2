@@ -1,11 +1,51 @@
 //@ts-check
+/** @typedef {[number, number]} DirectionTuple */
 
+/**
+ * A matrix represented as a SharedArrayBuffer
+ * An ArrayBuffer cannot be nested
+ * So the matrix will be represented as an m*n array
+ *
+ * @typedef {Object} CompactMatrix
+ * @property {Int16Array} data this will contain the matrix rows side by side
+ * @property {number} rows number of rows
+ * @property {number} cols number of cols
+ *
+*/
+
+/**
+ * MatrixSegment an subsegment of a row or column of a matrix
+ * to be copied to the destination array
+ *
+ * @typedef {number} DestArrayIndex current index in the destination array
+ * @typedef {number} CurrI the current i position in the matrix
+ * @typedef {number} CurrJ the current j position in the matrix
+ * @typedef {number} MinI the minimum i coordinate
+ * @typedef {number} MaxI the maximum i coordinate
+ * @typedef {number} MinJ the minimum j coordinate
+ * @typedef {number} MaxJ the maximum j coordinate
+ * @typedef {number} SegmentLength segment length
+ *
+ * @typedef {[DirectionTuple, DestArrayIndex, CurrI, CurrJ, MinI, MaxI, MinJ, MaxJ, SegmentLength]} MatrixSegment
+*/
 // Following constants are vectors that indicate the direction of movement
+/** @type {DirectionTuple} */
 const RIGHT = [0, 1];
+
+/** @type {DirectionTuple} */
 const DOWN = [1, 0];
+
+/** @type {DirectionTuple} */
 const LEFT = [0, -1];
+
+/** @type {DirectionTuple} */
 const UP = [-1, 0];
-const NONE = [0x013, 0x013];
+
+/** @type {DirectionTuple} */
+const NONE_DIR = [0x013, 0x013];
+
+/** @type {MatrixSegment} */
+const NONE_SEGMENT = [NONE_DIR, -1, -1, -1, -1, -1, -1, -1, -1];
 
 // key: current direction, value: next direction
 const NextDirectionMap = new Map([
@@ -24,7 +64,10 @@ const DirectionName = new Map([
 ]);
 
 /**
- * @param {any} m
+ * Traverses a matrix in a spiral pattern, returns the result as an array starting at 0, 0 clockwise direction
+ *
+ * @param {CompactMatrix} m the source matrix
+ * @returns {MatrixSegment[]}
  */
 function snail(m) {
     if (!m || m.rows < 1 || m.cols < 1) {
@@ -32,28 +75,23 @@ function snail(m) {
     }
 
     const length = m.rows * m.cols;
-    let i = 0;
-    let j = 0;
-    let maxJ = m.cols - 1;
-    let maxI = m.rows - 1;
-    let minJ = 0;
-    let minI = 0;
+    let i = 0, j = 0;
+    let maxJ = m.cols - 1, maxI = m.rows - 1;
+    let minJ = 0, minI = 0;
     let curDir = RIGHT;
 
     let arI = 0;
+    /** @type {MatrixSegment[]} */
     const resSegments = [];
 
     // initial segment length
     let segLength = m.cols;
 
-    let c = 0;
     do {
         resSegments.push([curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength]);
         arI += segLength;
-        [i, j, minI, maxI, minJ, maxJ, segLength] = nextSegment(curDir, i, j, minI, maxI, minJ, maxJ);
-        curDir = nextDirection(curDir);
-        c++;
-    } while (arI < length); // < 28);
+        [curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength] = nextSegment([curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength]);
+    } while (arI < length);
 
     return resSegments;
 }
@@ -64,36 +102,42 @@ function directionToString(dir) {
 }
 
 function nextDirection(currDir) {
-    const res = NextDirectionMap.get(currDir) ?? NONE;
+    const res = NextDirectionMap.get(currDir) ?? NONE_DIR;
 
     return res;
 }
+/**
+ *
+ * @param {MatrixSegment} segment
 
-function nextSegment(dir, ci, cj, minI, maxI, minJ, maxJ) {
+ * @returns {MatrixSegment}
+ */
+function nextSegment([dir, arI, ci, cj, minI, maxI, minJ, maxJ, _length]) {
+    const nextDir = nextDirection(dir);
     let length = 0;
-    if (dir === RIGHT) {
+    if (nextDir === DOWN) {
         cj = maxJ;
         minI++;
         ci++;
         length = maxI - ci + 1;
-    } else if (dir === DOWN) {
+    } else if (nextDir === LEFT) {
         ci = maxI;
         maxJ--;
         cj--;
         length = cj - minJ + 1;
-    } else if (dir === LEFT) {
+    } else if (nextDir === UP) {
         cj = minJ;
         maxI--;
         ci--;
         length = ci - minI + 1;
-    } else if (dir === UP) {
+    } else if (nextDir === RIGHT) {
         ci = minI;
         minJ++;
         cj++;
         length = maxJ - cj + 1;
     }
 
-    return [ci, cj, minI, maxI, minJ, maxJ, length];
+    return [nextDir, arI, ci, cj, minI, maxI, minJ, maxJ, length];
 }
 
 function copyMatrix(mJs, mInt32) {
@@ -107,15 +151,15 @@ function copyMatrix(mJs, mInt32) {
     }
 }
 
-function createMatrix(mJs) {
+function createCMatrix(jsMatrix) {
     let ix = 0;
-    const rows = mJs.length;
-    const cols = mJs?.[0]?.length ?? 0;
+    const rows = jsMatrix.length;
+    const cols = jsMatrix?.[0]?.length ?? 0;
     const sharedArrayBuffer = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * (rows * cols));
     const mInt32 = new Int16Array(sharedArrayBuffer);
 
-    for (let i = 0; i < mJs.length; i++) {
-        const row = mJs[i];
+    for (let i = 0; i < jsMatrix.length; i++) {
+        const row = jsMatrix[i];
         for (let j = 0; j < row.length; j++) {
             mInt32[ix] = row[j];
             ix++;
@@ -148,18 +192,18 @@ function createRandMatrix(rows, cols) {
     };
 }
 
-function createArray(arJs) {
-    const sharedArrayBuffer = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * arJs.length);
+function createArray(jsArray) {
+    const sharedArrayBuffer = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * jsArray.length);
     const arInt32 = new Int16Array(sharedArrayBuffer);
 
-    for (let i = 0; i < arJs.length; i++) {
-        arInt32[i] = arJs[i];
+    for (let i = 0; i < jsArray.length; i++) {
+        arInt32[i] = jsArray[i];
     }
 
     return arInt32;
 }
 
-function equalAB(ab1, ab2) {
+function equalIntArrays(ab1, ab2) {
     if (ab1.length !== ab2.length) return false;
     for (let i = 0; i < ab1.length; i++) {
         if (ab1[i] !== ab2[i]) return false;
@@ -194,5 +238,14 @@ function mat20x5() {
     ];
 
     return m;
+}
+
+function mat4x3() {
+    return [
+        [1, 2, 3],
+        [10, 11, 4],
+        [9, 12, 5],
+        [8, 7, 6]
+    ];
 }
 
