@@ -10,6 +10,15 @@ function timedFunc(func) {
     }
 }
 
+function equalIntArray(ab1, ab2) {
+    if (ab1.length !== ab2.length) return false;
+    for (let i = 0; i < ab1.length; i++) {
+        if (ab1[i] !== ab2[i]) return false;
+    }
+
+    return true;
+}
+
 const cases = [
     {
         name: "3x3 Matrix",
@@ -97,7 +106,7 @@ describe("Snail Sort", () => {
                 const curr = await asyncSnail(matrix);
 
                 if (!c.noCheck) {
-                    const isEqual = equalAB(curr, c.output);
+                    const isEqual = equalIntArray(curr, c.output);
                     expect(isEqual).toEqual(true);
                 } else {
                     expect(1).toBe(1);
