@@ -285,6 +285,7 @@ function runSnailCb(shabMatrix, callback) {
 }
 
 (function lol() {
+    console.log("Running snail test");
     const cMatrix = createCMatrix(mat4x3());
     runSnailCb(cMatrix, (ar) => {
         console.log("Finish Him", ar);
