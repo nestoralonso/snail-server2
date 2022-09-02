@@ -1,5 +1,7 @@
 body {
   background-color: #131414;
+  margin: 0;
+  height: 100%;
 }
 
 .header {
