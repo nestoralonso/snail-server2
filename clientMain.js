@@ -30,8 +30,8 @@ const bigTestButton = document.querySelectorAll(".run-big-test");
 bigTestButton.forEach(b => b.addEventListener("click", runBigTest));
 
 async function loadIntArrayTestCase() {
-  const inputJson = await (await fetch("/fixtures/10_000/input.json.bin")).json();
-  const outputJson = await (await fetch("/fixtures/10_000/output.json.bin")).json();
+  const inputJson = await (await fetch("https://cd-audio-notes-dev.s3.amazonaws.com/input-20x5.json")).json();
+  const outputJson = await (await fetch("https://cd-audio-notes-dev.s3.amazonaws.com/input-20x5.json")).json();
 
   const input = createCMatrix(inputJson);
   const output = createArray(outputJson);
