@@ -301,7 +301,7 @@ function runSnailCb(shabMatrix, callback) {
 
 const asyncSnail = promisify(runSnailCb);
 
-(async function lol() {
+(async function testLolAsyncs() {
     console.log("Running snail test");
     let cMatrix = createCMatrix(mat4x3());
     let res = await asyncSnail(cMatrix);
@@ -310,7 +310,7 @@ const asyncSnail = promisify(runSnailCb);
     cMatrix = createCMatrix(mat20x5());
     res = await asyncSnail(cMatrix);
     console.log(`Results [${cMatrix.rows}, ${cMatrix.cols}]`, res);
-})()
+})
 
 function mat20x5() {
 
