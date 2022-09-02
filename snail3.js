@@ -111,8 +111,8 @@ function createMatrix(mJs) {
     let ix = 0;
     const rows = mJs.length;
     const cols = mJs?.[0]?.length ?? 0;
-    const sharedArrayBuffer = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * (rows * cols));
-    const mInt32 = new Int32Array(sharedArrayBuffer);
+    const sharedArrayBuffer = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * (rows * cols));
+    const mInt32 = new Int16Array(sharedArrayBuffer);
 
     for (let i = 0; i < mJs.length; i++) {
         const row = mJs[i];
@@ -131,8 +131,8 @@ function createMatrix(mJs) {
 
 function createRandMatrix(rows, cols) {
     let ix = 0;
-    const sharedArrayBuffer = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * (rows * cols));
-    const mInt32 = new Int32Array(sharedArrayBuffer);
+    const sharedArrayBuffer = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * (rows * cols));
+    const mInt32 = new Int16Array(sharedArrayBuffer);
 
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
@@ -149,8 +149,8 @@ function createRandMatrix(rows, cols) {
 }
 
 function createArray(arJs) {
-    const sharedArrayBuffer = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * arJs.length);
-    const arInt32 = new Int32Array(sharedArrayBuffer);
+    const sharedArrayBuffer = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * arJs.length);
+    const arInt32 = new Int16Array(sharedArrayBuffer);
 
     for (let i = 0; i < arJs.length; i++) {
         arInt32[i] = arJs[i];

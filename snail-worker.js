@@ -1,14 +1,12 @@
 //@ts-check
-var buffer;
-
-function getElement(fm, i, j) {
-  const { data, cols } = fm;
+function getElement(cMatrix, i, j) {
+  const { data, cols } = cMatrix;
 
   const ix = i * cols + j;
   return data[ix];
 }
 
-function copySegment({ mat, array, segment } = { mat: [], array: [] }) {
+function copySegment({ mat, array, segment } ) {
 
   if (!segment || !segment.length) {
     return -1;

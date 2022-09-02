@@ -1,4 +1,5 @@
 //@ts-check
+/** @type {NodeListOf<HTMLButtonElement>} */
 const buttons = document.querySelectorAll(".run-test");
 buttons.forEach(b => b.addEventListener("click", runTest));
 
@@ -18,8 +19,8 @@ function runTest(e) {
   console.log("🤑 segments", segments.length)
 
   const length = mat.rows * mat.cols;
-  const shab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * length);
-  const array = new Int32Array(shab);
+  const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
+  const array = new Int16Array(shab);
 
 
   const tasks = segments;
@@ -44,8 +45,6 @@ function runTest(e) {
     }
   }
 
-  //worker pool
-  console.time("pool-init");
   for (let i = 0; i < NUM_WORKERS; i++) {
     const worker = new Worker("snail-worker.js");
     pool.push(worker);
