@@ -232,6 +232,9 @@ function runSnailCb(shabMatrix, callback) {
     let segments = snail(shabMatrix);
     console.log("🤑 segments", segments.length)
 
+    const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
+    const array = new Int16Array(shab);
+
     const pool = getWorkerPool();
 
     let numTasks = segments.length;
@@ -246,7 +249,7 @@ function runSnailCb(shabMatrix, callback) {
                     tasksCompleted++;
                     if (tasksCompleted === numTasks) {
                         console.timeEnd("snail-run");
-                        callback();
+                        callback(array);
                     } else {
                         if (tasks.length > 0) {
                             const segment = tasks.shift();
@@ -264,9 +267,6 @@ function runSnailCb(shabMatrix, callback) {
             }
         }
     }
-
-    const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
-    const array = new Int16Array(shab);
 
     function run() {
         console.time("snail-run");
