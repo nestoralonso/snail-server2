@@ -15,13 +15,15 @@ function runTest(e) {
   const NUM_WORKERS = 4;
 
   let mat = createRandMatrix(parseInt(rows), parseInt(cols));
-  let segments = snail(mat);
-  console.log("🤑 segments", segments.length)
 
   const length = mat.rows * mat.cols;
 
+  // Sanity check, remove later
   mat[0] = 0;
   mat[length - 1] = 0x7FFF;
+
+  let segments = snail(mat);
+  console.log("🤑 segments", segments.length)
 
   const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
   const array = new Int16Array(shab);
