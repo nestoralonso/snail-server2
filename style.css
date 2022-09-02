@@ -22,7 +22,7 @@ h1,
   text-transform: uppercase;
 }
 
-.text {
+p, ul, h3, .text {
   color: #efefef;
 }
 
