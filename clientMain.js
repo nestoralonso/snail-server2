@@ -9,7 +9,7 @@ buttons.forEach(b => b.addEventListener("click", runTest));
 async function runTest(e) {
   const { rows, cols } = e.target.dataset;
   buttons.forEach(b => {
-     b.disabled = true;
+    b.disabled = true;
   });
 
   let mat = createRandMatrix(parseInt(rows), parseInt(cols));
@@ -18,5 +18,8 @@ async function runTest(e) {
   // let mat = createCMatrix(mat4x3());
 
   let res = await asyncSnail(mat);
+  buttons.forEach(b => {
+    b.disabled = false;
+  });
   console.log("🤑 res", res.length)
 }
