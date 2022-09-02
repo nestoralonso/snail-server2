@@ -13,6 +13,7 @@ async function runTest(e) {
   });
 
   let mat = createRandMatrix(parseInt(rows), parseInt(cols));
+  console.log("🦊>>>> ~ running with matrix ", mat)
   // console.log(`🦊 ${JSON.stringify(mat4x3(), null, 4)}`)
   // let mat = createCMatrix(mat4x3());
 
