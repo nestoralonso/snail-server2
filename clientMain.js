@@ -62,7 +62,7 @@ function runTest(e) {
               b.disabled = false;
            });
             console.timeEnd("snail-run");
-            alert(`Done. first=${array[0]}, last=${array[length]}`);
+            alert(`Done. first=${array[0]}, last=${array[length - 1]}`);
           } else {
             if (tasks.length > 0) {
               const segment = tasks.shift();
