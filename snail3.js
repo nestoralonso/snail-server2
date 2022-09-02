@@ -299,17 +299,17 @@ function runSnailCb(shabMatrix, callback) {
     run();
 }
 
-(function lol() {
-    console.log("Running snail test");
-    const cMatrix = createCMatrix(mat20x5());
-    runSnailCb(cMatrix, (err, ar) => {
-        if (err) {
-            console.log("Unexpected error", err);
-            return;
-        }
+const asyncSnail = promisify(runSnailCb);
 
-        console.log("Finish Him", ar);
-    })
+(async function lol() {
+    console.log("Running snail test");
+    let cMatrix = createCMatrix(mat4x3());
+    let res = await asyncSnail(cMatrix);
+    console.log(`Results [${cMatrix.rows}, ${cMatrix.cols}]`, res);
+
+    cMatrix = createCMatrix(mat20x5());
+    res = await asyncSnail(cMatrix);
+    console.log(`Results [${cMatrix.rows}, ${cMatrix.cols}]`, res);
 })()
 
 function mat20x5() {
