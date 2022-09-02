@@ -8,7 +8,7 @@ const file = new static_.Server(__dirname, {
     "Cross-Origin-Embedder-Policy": "require-corp"
   }
 });
-console.log("🐮 Ehlo2");
+console.log("🐮 Ehlo");
 
 http
   .createServer(function (req, res) {
