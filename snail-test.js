@@ -106,5 +106,5 @@ describe("Snail Sort", () => {
         );
 });
 
-const reportEl = document.querySelector("report");
+const reportEl = document.querySelector("#report");
 prettify.toHTML(run(), reportEl);
