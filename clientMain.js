@@ -3,6 +3,7 @@
 const buttons = document.querySelectorAll(".run-test");
 buttons.forEach(b => b.addEventListener("click", runTest));
 
+const resultsTextBlock = document.querySelectorAll(".run-test-results");
 /**
  * {Event} e
 */
@@ -43,10 +44,19 @@ async function loadIntArrayTestCase() {
 }
 
 async function runBigTest(e) {
-  const { input, output } = await loadIntArrayTestCase();
-  console.log({ input, output });
-  const ans = await asyncSnail(input);
+  resultsTextBlock.forEach(e => e.textContent = "Running...\n");
 
+  let iniTime = Date.now();
+  const { input, output } = await loadIntArrayTestCase();
+  let duration = Date.now() - iniTime;
+  resultsTextBlock.forEach(e => e.textContent += `Loaded test case in ${duration}`);
+
+  iniTime = Date.now();
+  const ans = await asyncSnail(input);
+  duration = Date.now() - iniTime;
   const isEqual = equalIntArrays(ans, output);
   console.log(`🥁🎉 And the result is `, {isEqual});
+
+  resultsTextBlock.forEach(e => e.textContent += `🥁🤑 Snail duration ${duration}`);
+  resultsTextBlock.forEach(e => e.textContent += `🥁🤑 Results are ${isEqual}`);
 }
