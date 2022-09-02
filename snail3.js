@@ -212,6 +212,85 @@ function equalIntArrays(ab1, ab2) {
     return true;
 }
 
+const NUM_WORKERS = 4;
+const pool = [];
+function getWorkerPool() {
+    if (pool.length > 0) return pool;
+    for (let i = 0; i < NUM_WORKERS; i++) {
+        const worker = new Worker("snail-worker.js");
+        pool.push(worker);
+    }
+
+    return pool;
+}
+
+function runSnailCb(shabMatrix, callback) {
+    const { rows, cols } = shabMatrix;
+    console.log("🦊>>>> ~ runSnailCb ~ { rows, cols }", { rows, cols })
+    const length = shabMatrix.rows * shabMatrix.cols;
+
+    let segments = snail(shabMatrix);
+    console.log("🤑 segments", segments.length)
+
+    const pool = getWorkerPool();
+
+    let numTasks = segments.length;
+    let tasksCompleted = 0;
+    const tasks = segments;
+
+    for (const worker of pool) {
+        worker.onmessage = function (msg) {
+            const { type, arI } = msg.data;
+            switch (type) {
+                case "result":
+                    tasksCompleted++;
+                    if (tasksCompleted === numTasks) {
+                        console.timeEnd("snail-run");
+                        callback();
+                    } else {
+                        if (tasks.length > 0) {
+                            const segment = tasks.shift();
+                            this.postMessage({
+                                command: "run",
+                                segment,
+                                mat: shabMatrix,
+                                array,
+                            });
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
+    const array = new Int16Array(shab);
+
+    function run() {
+        console.time("snail-run");
+        for (const worker of pool) {
+            const segment = tasks.shift();
+            worker.postMessage({
+                command: "run",
+                mat: shabMatrix,
+                array,
+                segment,
+            });
+        }
+    }
+
+    run();
+}
+
+(function lol() {
+    const cMatrix = createCMatrix(mat4x3());
+    runSnailCb((ar) => {
+        console.log("Finish Him", ar);
+    })
+})()
+
 function mat20x5() {
 
     const m = [
