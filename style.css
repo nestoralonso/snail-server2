@@ -1,0 +1,87 @@
+body {
+    background-color: #131414;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 1rem 1rem;
+    background-color: #f7f7f7;
+  }
+
+  .logo {
+    max-width: 9rem;
+    height: 100%;
+    margin-right: 3rem;
+  }
+
+  .title {
+    color: #212121;
+    text-transform: uppercase;
+  }
+
+  .text {
+    color: #efefef;
+  }
+
+  .response-link {
+    color: #af60a6;
+    font-weight: bold;
+  }
+
+  .text {
+    color: #efefef;
+  }
+
+  .m-2rem {
+    margin: 1rem;
+  }
+
+  pre {
+      color: #f1f3f5;
+      background-color: #131414;
+      overflow-x: auto;
+      font-weight: 400;
+      font-size: .875em;
+      line-height: 1.7142857;
+      margin-top: 1.7142857em;
+      margin-bottom: 1.7142857em;
+      border-radius: .375rem;
+      padding: 0 1.1428571em;
+  }
+
+  code {
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+  }
+
+  section {
+    background-color: #222327;
+    padding: 1rem;
+    margin-right: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .jest-lite-report {
+    border-radius: 0.5rem;
+  }
+
+  #report {
+    position: sticky;
+    top: 1rem;
+  }
+  .recv.msg > p {
+    margin: 0;
+  }
+
+  .jest-lite-report__result {
+    max-width: 60vw;
+    overflow-x: hidden;
+  }
