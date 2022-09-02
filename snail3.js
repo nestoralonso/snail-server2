@@ -224,6 +224,21 @@ function getWorkerPool() {
     return pool;
 }
 
+const promisify = (fn) => {
+    return (...args) => {
+      return new Promise((resolve, reject) => {
+        function customCallback(err, ...results) {
+          if (err) {
+            return reject(err)
+          }
+          return resolve(results.length === 1 ? results[0] : results)
+         }
+         args.push(customCallback)
+         fn.call(this, ...args)
+       })
+    }
+ }
+
 function runSnailCb(shabMatrix, callback) {
     const { rows, cols } = shabMatrix;
     console.log("🦊>>>> ~ runSnailCb ~ { rows, cols }", { rows, cols })
@@ -249,7 +264,7 @@ function runSnailCb(shabMatrix, callback) {
                     tasksCompleted++;
                     if (tasksCompleted === numTasks) {
                         console.timeEnd("snail-run");
-                        callback(array);
+                        callback(null, array);
                     } else {
                         if (tasks.length > 0) {
                             const segment = tasks.shift();
@@ -287,7 +302,12 @@ function runSnailCb(shabMatrix, callback) {
 (function lol() {
     console.log("Running snail test");
     const cMatrix = createCMatrix(mat20x5());
-    runSnailCb(cMatrix, (ar) => {
+    runSnailCb(cMatrix, (err, ar) => {
+        if (err) {
+            console.log("Unexpected error", err);
+            return;
+        }
+
         console.log("Finish Him", ar);
     })
 })()
