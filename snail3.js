@@ -97,6 +97,65 @@ export function snail(m) {
 }
 
 
+function runSnailCb(shabMatrix, callback) {
+    const length = shabMatrix.rows * shabMatrix.cols;
+
+    let segments = snail(shabMatrix);
+
+    const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
+    const array = new Int16Array(shab);
+
+    const pool = getWorkerPool();
+
+    let numTasks = segments.length;
+    let tasksCompleted = 0;
+    const tasks = segments;
+
+    for (const worker of pool) {
+        worker.onmessage = function (msg) {
+            const { type } = msg.data;
+            switch (type) {
+                case "result":
+                    tasksCompleted++;
+                    if (tasksCompleted === numTasks) {
+                        console.timeEnd("snail-run");
+                        callback(null, array);
+                    } else {
+                        if (tasks.length > 0) {
+                            const segment = tasks.shift();
+                            this.postMessage({
+                                command: "run",
+                                segment,
+                                mat: shabMatrix,
+                                array,
+                            });
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    function run() {
+        console.time("snail-run");
+        for (const worker of pool) {
+            const segment = tasks.shift();
+            worker.postMessage({
+                command: "run",
+                mat: shabMatrix,
+                array,
+                segment,
+            });
+        }
+    }
+
+    run();
+}
+
+export const asyncSnail = promisify(runSnailCb);
+
 function directionToString(dir) {
     return DirectionName.get(dir);
 }
@@ -224,7 +283,7 @@ function getWorkerPool() {
     return pool;
 }
 
-const promisify = (fn) => {
+function promisify(fn) {
     return (...args) => {
       return new Promise((resolve, reject) => {
         function customCallback(err, ...results) {
@@ -238,68 +297,6 @@ const promisify = (fn) => {
        })
     }
  }
-
-function runSnailCb(shabMatrix, callback) {
-    const { rows, cols } = shabMatrix;
-    console.log("🦊>>>> ~ runSnailCb ~ { rows, cols }", { rows, cols })
-    const length = shabMatrix.rows * shabMatrix.cols;
-
-    let segments = snail(shabMatrix);
-    console.log("🤑 segments", segments.length)
-
-    const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
-    const array = new Int16Array(shab);
-
-    const pool = getWorkerPool();
-
-    let numTasks = segments.length;
-    let tasksCompleted = 0;
-    const tasks = segments;
-
-    for (const worker of pool) {
-        worker.onmessage = function (msg) {
-            const { type, arI } = msg.data;
-            switch (type) {
-                case "result":
-                    tasksCompleted++;
-                    if (tasksCompleted === numTasks) {
-                        console.timeEnd("snail-run");
-                        callback(null, array);
-                    } else {
-                        if (tasks.length > 0) {
-                            const segment = tasks.shift();
-                            this.postMessage({
-                                command: "run",
-                                segment,
-                                mat: shabMatrix,
-                                array,
-                            });
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    function run() {
-        console.time("snail-run");
-        for (const worker of pool) {
-            const segment = tasks.shift();
-            worker.postMessage({
-                command: "run",
-                mat: shabMatrix,
-                array,
-                segment,
-            });
-        }
-    }
-
-    run();
-}
-
-export const asyncSnail = promisify(runSnailCb);
 
 (async function testLolAsyncs() {
     console.log("Running snail test");

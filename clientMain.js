@@ -35,8 +35,8 @@ bigTestButton.forEach(b => b.addEventListener("click", runBigTest));
 
 async function loadIntArrayTestCase() {
   const [inputReq, outputReq] = await Promise.all([
-    fetch("d3jrl7s14hrgo1.cloudfront.net/input-10000.json"),
-    fetch("d3jrl7s14hrgo1.cloudfront.net/output-10000.json"),
+    fetch("https://d3jrl7s14hrgo1.cloudfront.net/input-10000.json"),
+    fetch("https://d3jrl7s14hrgo1.cloudfront.net/output-10000.json"),
   ]);
   const inputJson = await inputReq.json();
   const outputJson = await outputReq.json();
