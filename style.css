@@ -77,7 +77,13 @@ section {
 
 #report {
   top: 1rem;
+  flex-grow: 0.35;
 }
+
+.instructions {
+  flex-grow: 0.65;
+}
+
 .recv.msg > p {
   margin: 0;
 }
