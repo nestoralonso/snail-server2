@@ -1,18 +1,6 @@
 //@ts-check
 import { createCMatrix, createIntArray, createRandMatrix, asyncSnail } from "./snail3.js";
 
-function timedFunc(func) {
-    return function fun(...args) {
-        const iniTime = new Date().getTime();
-        const res = func(...args);
-        const endTime = new Date().getTime();
-        const totalTime = endTime - iniTime;
-        console.log(`🦊 ${func.name} (${args.length}) ~ totalTime`, (totalTime / 1000));
-
-        return res;
-    }
-}
-
 function equalIntArray(ab1, ab2) {
     if (ab1.length !== ab2.length) return false;
     for (let i = 0; i < ab1.length; i++) {
