@@ -7,4 +7,3 @@ To run the test suite on deno type:
 ```bash
 deno test --allow-read snail3.deno.test.js
 ```
-

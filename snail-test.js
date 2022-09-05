@@ -27,6 +27,8 @@ describe("Snail Sort", () => {
                 const curr = await asyncSnail(matrix);
 
                 if (!c.noCheck) {
+                    console.log("👀", curr);
+                    console.log("🤑", c.output);
                     const isEqual = equalIntArray(curr, c.output);
                     expect(isEqual).toEqual(true);
                 } else {
