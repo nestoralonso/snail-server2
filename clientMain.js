@@ -12,6 +12,7 @@ const resultsTextBlock = document.querySelector(".run-test-results") ?? document
  * {Event} e
 */
 async function runTest(e) {
+  clearText();
   const { rows, cols } = e.target.dataset;
   buttons.forEach(b => {
     b.disabled = true;
@@ -60,6 +61,10 @@ async function loadIntArrayOutputTestCase() {
 
 function displayText(msg) {
   resultsTextBlock.innerHTML += msg + '<br/>';
+}
+
+function clearText(msg) {
+  resultsTextBlock.innerHTML += '&nbsp;';
 }
 
 async function runBigTest(e) {
