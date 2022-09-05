@@ -14,7 +14,7 @@
 </head>
 
 <body>
-  <div class="header  m-2rem">
+  <div class="header m-2rem">
     <img class="logo" src="/img/brain-gym.png" alt="logo">
     <h1 class="title">
       Snail Sort</h1>
@@ -22,6 +22,9 @@
 
   <div class="container">
     <div class="instructions">
+      <div id="report" class="run-test-results">
+      </div>
+
       <h1 class="title text">SnailSort using Webworker pool</h1>
       <p class="text">
         To make it work on codesandbox, click "Open in a new Tab" in the minibrowser
@@ -30,10 +33,6 @@
       <p class="text">
         The problem is parallelizable
       </p>
-
-
-      <div class="run-test-results code">
-      <div>
 
       <div>
         <button class="run-test" data-rows="3" data-cols="4">RandRun 3x4</button>
@@ -47,12 +46,12 @@
       <div>
         <button class="run-big-test">Load 10_000 Test</button>
       </div>
+      <div class="run-test-results code">&nbsp;</div>
 
     </div>
 
-    <div id="report">
+    <div id="report" class="run-test-results">&nbsp;</div>
 
-    </div>
   </div>
 
   <script type="module" src="/clientMain.js"></script>
