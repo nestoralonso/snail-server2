@@ -335,7 +335,7 @@ function promisify(fn) {
     cMatrix = createCMatrix(mat20x5());
     res = await asyncSnail(cMatrix);
     console.log(`Results [${cMatrix.rows}, ${cMatrix.cols}]`, res);
-})
+});
 
 export function mat20x5() {
 
