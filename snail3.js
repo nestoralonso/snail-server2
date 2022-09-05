@@ -97,6 +97,10 @@ export function snail(m) {
 }
 
 
+/**
+ * @param {CompactMatrix} shabMatrix
+ * @param {(errors: any, arrayResult: Int16Array) => void} callback
+ */
 function runSnailCb(shabMatrix, callback) {
     const length = shabMatrix.rows * shabMatrix.cols;
 
@@ -112,7 +116,7 @@ function runSnailCb(shabMatrix, callback) {
     const tasks = segments;
 
     for (const worker of pool) {
-        worker.onmessage = function (msg) {
+        worker.onmessage = function (/** @type {{ data: { type: string; }; }} */ msg) {
             const { type } = msg.data;
             switch (type) {
                 case "result":
@@ -154,12 +158,21 @@ function runSnailCb(shabMatrix, callback) {
     run();
 }
 
+/**
+ * @type {Function}
+ */
 export const asyncSnail = promisify(runSnailCb);
 
+/**
+ * @param {DirectionTuple} dir
+ */
 function directionToString(dir) {
     return DirectionName.get(dir);
 }
 
+/**
+ * @param {DirectionTuple} currDir
+ */
 function nextDirection(currDir) {
     const res = NextDirectionMap.get(currDir) ?? NONE_DIR;
 
@@ -199,17 +212,11 @@ function nextSegment([dir, arI, ci, cj, minI, maxI, minJ, maxJ, _length]) {
     return [nextDir, arI, ci, cj, minI, maxI, minJ, maxJ, length];
 }
 
-function copyMatrix(mJs, mInt32) {
-    let ix = 0;
-    for (let i = 0; i < mJs.length; i++) {
-        const row = mJs[i];
-        for (let j = 0; j < row.length; j++) {
-            mInt32.data[ix] = row[j];
-            ix++;
-        }
-    }
-}
-
+/**
+ * @param {number[][]} jsMatrix
+ *
+ * @returns {CompactMatrix} a matrix encoded into an IntArray
+ */
 export function createCMatrix(jsMatrix) {
     let ix = 0;
     const rows = jsMatrix.length;
@@ -232,25 +239,37 @@ export function createCMatrix(jsMatrix) {
     };
 }
 
+/**
+ * @param {number} rows
+ * @param {number} cols
+ *
+ * @returns {CompactMatrix} a matrix encoded as a unidimnesional array
+ */
 export function createRandMatrix(rows, cols) {
     let ix = 0;
-    const sharedArrayBuffer = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * (rows * cols));
-    const mInt32 = new Int16Array(sharedArrayBuffer);
+    const byteLength = Int16Array.BYTES_PER_ELEMENT * rows * cols;
+    const sharedArrayBuffer = new SharedArrayBuffer(byteLength);
+    const data = new Int16Array(sharedArrayBuffer);
 
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
-            mInt32[ix] = Math.floor(Math.random() * 1000);
+            data[ix] = Math.floor(Math.random() * 1000);
             ix++;
         }
     }
 
     return {
-        data: mInt32,
+        data,
         rows,
         cols,
     };
 }
 
+/**
+ * Creates an IntArray from an old regular js array
+ *
+ * @param {number[]} jsArray
+ */
 export function createIntArray(jsArray) {
     const sharedArrayBuffer = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * jsArray.length);
     const arInt32 = new Int16Array(sharedArrayBuffer);
@@ -262,6 +281,11 @@ export function createIntArray(jsArray) {
     return arInt32;
 }
 
+/**
+ * check if two IntArrays are equal
+ * @param {Int16Array} ab1
+ * @param {Int16Array} ab2
+ */
 export function equalIntArrays(ab1, ab2) {
     if (ab1.length !== ab2.length) return false;
     for (let i = 0; i < ab1.length; i++) {
@@ -284,8 +308,12 @@ function getWorkerPool() {
 }
 
 function promisify(fn) {
-    return (...args) => {
+    return (/** @type {((err: any, ...results: any[]) => void)[]} */ ...args) => {
       return new Promise((resolve, reject) => {
+        /**
+           * @param {any} err
+           * @param {any[]} results
+           */
         function customCallback(err, ...results) {
           if (err) {
             return reject(err)

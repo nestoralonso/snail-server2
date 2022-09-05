@@ -63,7 +63,7 @@ function displayText(msg) {
   resultsTextBlock.innerHTML += '🦊 ' + msg + '<br/>';
 }
 
-function clearText(msg) {
+function clearText() {
   resultsTextBlock.innerHTML = '&nbsp;';
 }
 
