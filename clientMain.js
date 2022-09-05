@@ -64,7 +64,7 @@ function displayText(msg) {
 }
 
 function clearText(msg) {
-  resultsTextBlock.innerHTML += '&nbsp;';
+  resultsTextBlock.innerHTML = '&nbsp;';
 }
 
 async function runBigTest(e) {
