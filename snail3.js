@@ -45,6 +45,7 @@ const UP = [-1, 0];
 const NONE_DIR = [0x013, 0x013];
 
 /** @type {MatrixSegment} */
+// @ts-ignore
 const NONE_SEGMENT = [NONE_DIR, -1, -1, -1, -1, -1, -1, -1, -1];
 
 // key: current direction, value: next direction
@@ -166,6 +167,7 @@ export const asyncSnail = promisify(runSnailCb);
 /**
  * @param {DirectionTuple} dir
  */
+// @ts-ignore
 function directionToString(dir) {
     return DirectionName.get(dir);
 }
@@ -269,6 +271,8 @@ export function createRandMatrix(rows, cols) {
  * Creates an IntArray from an old regular js array
  *
  * @param {number[]} jsArray
+ *
+ * @returns {Int16Array} a compact array
  */
 export function createIntArray(jsArray) {
     const sharedArrayBuffer = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * jsArray.length);
@@ -296,6 +300,9 @@ export function equalIntArrays(ab1, ab2) {
 }
 
 const NUM_WORKERS = 4;
+/**
+* @type {Worker[]}
+*/
 const pool = [];
 function getWorkerPool() {
     if (pool.length > 0) return pool;
@@ -307,6 +314,9 @@ function getWorkerPool() {
     return pool;
 }
 
+/**
+* @param {{ (shabMatrix: CompactMatrix, callback: (errors: any, arrayResult: Int16Array) => void): void; call?: any; }} fn
+*/
 function promisify(fn) {
     return (/** @type {((err: any, ...results: any[]) => void)[]} */ ...args) => {
       return new Promise((resolve, reject) => {
@@ -321,6 +331,7 @@ function promisify(fn) {
           return resolve(results.length === 1 ? results[0] : results)
          }
          args.push(customCallback)
+         // @ts-ignore
          fn.call(this, ...args)
        })
     }
@@ -335,7 +346,7 @@ function promisify(fn) {
     cMatrix = createCMatrix(mat20x5());
     res = await asyncSnail(cMatrix);
     console.log(`Results [${cMatrix.rows}, ${cMatrix.cols}]`, res);
-});
+})();
 
 export function mat20x5() {
 
