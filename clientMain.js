@@ -59,16 +59,18 @@ async function runBigTest(e) {
   displayText("Running...");
 
   let iniTime = Date.now();
-  displayText(`Loading test cases...`);
+  displayText(`Loading input for test case...`);
   const input = await loadIntMatrixInputTestCase();
   let duration = Date.now() - iniTime;
   displayText(`Loaded test case in ${duration}`);
 
+  displayText(`Computing spiral sort...`);
   iniTime = Date.now();
   const ans = await asyncSnail(input);
   duration = Date.now() - iniTime;
   displayText(`🥁🤑 Snail duration ${duration}`);
 
+  displayText(`Loading output for test case...`);
   iniTime = Date.now();
   const output = await loadIntArrayOutputTestCase();
   duration = Date.now() - iniTime;
