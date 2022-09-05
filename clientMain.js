@@ -36,7 +36,7 @@ bigTestButton.forEach(b => b.addEventListener("click", runBigTest));
 
 async function loadIntMatrixInputTestCase() {
   const inputReq  = await
-    fetch("https://d3jrl7s14hrgo1.cloudfront.net/input-10000.json"),
+    fetch("https://d3jrl7s14hrgo1.cloudfront.net/input-10000.json");
 
   const inputJson = await inputReq.json();
   const input = createCMatrix(inputJson);
