@@ -60,7 +60,7 @@ async function loadIntArrayOutputTestCase() {
 }
 
 function displayText(msg) {
-  resultsTextBlock.innerHTML += msg + '<br/>';
+  resultsTextBlock.innerHTML += '🦊 ' + msg + '<br/>';
 }
 
 function clearText(msg) {
