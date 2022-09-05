@@ -59,7 +59,7 @@ async function loadIntArrayOutputTestCase() {
 }
 
 function displayText(msg) {
-  resultsTextBlock.innerHTML += msg + '<br>';
+  resultsTextBlock.innerHTML += msg + '<br/>';
 }
 
 async function runBigTest(e) {
