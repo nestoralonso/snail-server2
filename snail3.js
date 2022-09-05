@@ -295,7 +295,7 @@ export function equalIntArrays(ab1, ab2) {
     return true;
 }
 
-const NUM_WORKERS = 8;
+const NUM_WORKERS = 4;
 const pool = [];
 function getWorkerPool() {
     if (pool.length > 0) return pool;
