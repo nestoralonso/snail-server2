@@ -105,6 +105,11 @@ section {
   justify-content: center;
 }
 
+.official-test-buttons button {
+  font-family: Brush Script MT;
+}
+
+
 .lol-button {
   background: #6182A7;
   background-image: linear-gradient(top, #6182A7, #0F1E36);
