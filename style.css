@@ -94,3 +94,44 @@ section {
   max-width: 60vw;
   overflow-x: hidden;
 }
+
+
+.lol-button {
+  background: #6182A7;
+  background-image: -webkit-linear-gradient(top, #6182A7, #0F1E36);
+  background-image: -moz-linear-gradient(top, #6182A7, #0F1E36);
+  background-image: -ms-linear-gradient(top, #6182A7, #0F1E36);
+  background-image: -o-linear-gradient(top, #6182A7, #0F1E36);
+  background-image: -webkit-gradient(to bottom, #6182A7, #0F1E36);
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  color: #FFFFFF;
+  font-family: Arial;
+  font-size: 40px;
+  font-weight: 100;
+  padding: 40px;
+  -webkit-box-shadow: 1px 1px 20px 0 #000000;
+  -moz-box-shadow: 1px 1px 20px 0 #000000;
+  box-shadow: 1px 1px 20px 0 #000000;
+  text-shadow: 1px 1px 20px #000000;
+  border: solid #31588F 1px;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+}
+
+.lol-button:hover {
+  border: solid #629ae8 1px;
+  background: #6182A7;
+  background-image: -webkit-linear-gradient(top, #5381b5, #0F1E36);
+  background-image: -moz-linear-gradient(top, #5381b5, #0F1E36);
+  background-image: -ms-linear-gradient(top, #5381b5, #0F1E36);
+  background-image: -o-linear-gradient(top, #5381b5, #0F1E36);
+  background-image: -webkit-gradient(to bottom, #5381b5, #0F1E36);
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  text-decoration: none;
+}
