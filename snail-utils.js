@@ -1,3 +1,7 @@
+//@ts-check
+
+import { DOWN, LEFT, RIGHT, UP } from "./snail3.js";
+
 /**
  *
  * @param {CompactMatrix} cMatrix target matrix
@@ -5,7 +9,7 @@
  * @param {number} j
  * @returns
  */
- function getElement(cMatrix, i, j) {
+function getElement(cMatrix, i, j) {
     const { data, cols } = cMatrix;
 
     const ix = i * cols + j;
@@ -27,12 +31,31 @@ export function copySegment(mat, array, segment) {
     let [dir, arI, ci, cj, minI, maxI, minJ, maxJ] = segment;
     const [di, dj] = dir;
 
-    do {
-        array[arI] = getElement(mat, ci, cj);
-        ci += di;
-        cj += dj;
-        arI++;
-    } while (ci >= minI && ci <= maxI && cj >= minJ && cj <= maxJ);
-
+    if (dir === RIGHT) {
+        do {
+            array[arI] = getElement(mat, ci, cj);
+            cj += dj;
+            arI++;
+        } while (cj <= maxJ);
+    } else if (dir === DOWN) {
+        do {
+            array[arI] = getElement(mat, ci, cj);
+            ci += di;
+            arI++;
+        } while (ci <= maxI);
+    } else if (dir === LEFT) {
+        do {
+            array[arI] = getElement(mat, ci, cj);
+            ci += di;
+            cj += dj;
+            arI++;
+        } while (cj >= minJ);
+    } else if (dir === UP) {
+        do {
+            array[arI] = getElement(mat, ci, cj);
+            ci += di;
+            arI++;
+        } while (ci >= minI);
+    }
     return arI;
 }

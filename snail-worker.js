@@ -1,4 +1,5 @@
 //@ts-check
+// @ts-ignore deno does not know about importScripts
 importScripts('./snail-utils.js')
 
 /**
@@ -18,7 +19,9 @@ importScripts('./snail-utils.js')
 self.onmessage = function (/** @type {{ data: { command: string; segment: any; mat: any; array: any; }; }} */ msg) {
   const { command, segment, mat, array } = msg.data;
   if (command === "run") {
-    const arI = self.copySegment(mat, array, segment);
+
+    // @ts-ignore deno does not recognize that this function is imported from snail-utils
+    const arI = copySegment(mat, array, segment);
     // @ts-ignore
     self.postMessage({
       type: "result",

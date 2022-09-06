@@ -32,23 +32,23 @@ import { copySegment } from "./snail-utils.js";
 */
 // Following constants are vectors that indicate the direction of movement
 /** @type {DirectionTuple} */
-const RIGHT = [0, 1];
+export const RIGHT = [0, 1];
 
 /** @type {DirectionTuple} */
-const DOWN = [1, 0];
+export const DOWN = [1, 0];
 
 /** @type {DirectionTuple} */
-const LEFT = [0, -1];
+export const LEFT = [0, -1];
 
 /** @type {DirectionTuple} */
-const UP = [-1, 0];
+export const UP = [-1, 0];
 
 /** @type {DirectionTuple} */
-const NONE_DIR = [0x013, 0x013];
+export const NONE_DIR = [0x013, 0x013];
 
 /** @type {MatrixSegment} */
 // @ts-ignore
-const NONE_SEGMENT = [NONE_DIR, -1, -1, -1, -1, -1, -1, -1, -1];
+export const NONE_SEGMENT = [NONE_DIR, -1, -1, -1, -1, -1, -1, -1, -1];
 
 // key: current direction, value: next direction
 const NextDirectionMap = new Map([
