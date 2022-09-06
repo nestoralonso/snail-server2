@@ -108,7 +108,7 @@ section {
   text-shadow: 1px 1px 20px #000000;
   border: solid #31588F 1px;
   text-decoration: none;
-  display: block;
+  display: inline-block;
   cursor: pointer;
   text-align: center;
 }
