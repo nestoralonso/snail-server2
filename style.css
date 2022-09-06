@@ -95,6 +95,10 @@ section {
   overflow-x: hidden;
 }
 
+.test-buttons {
+  display: flex;
+  gap: 1rem;
+}
 
 .lol-button {
   background: #6182A7;
@@ -108,7 +112,7 @@ section {
   text-shadow: 1px 1px 20px #000000;
   border: solid #31588F 1px;
   text-decoration: none;
-  display: inline-block;
+  display: block;
   cursor: pointer;
   text-align: center;
 }
