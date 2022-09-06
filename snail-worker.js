@@ -9,19 +9,19 @@
 
 // Following constants are vectors that indicate the direction of movement
 /** @type {DirectionTuple} */
-export const RIGHT = [0, 1];
+const RIGHT = [0, 1];
 
 /** @type {DirectionTuple} */
-export const DOWN = [1, 0];
+const DOWN = [1, 0];
 
 /** @type {DirectionTuple} */
-export const LEFT = [0, -1];
+const LEFT = [0, -1];
 
 /** @type {DirectionTuple} */
-export const UP = [-1, 0];
+const UP = [-1, 0];
 
 /** @type {DirectionTuple} */
-export const NONE_DIR = [0x013, 0x013];
+const NONE_DIR = [0x013, 0x013];
 
 
 /**
@@ -74,7 +74,7 @@ export const NONE_DIR = [0x013, 0x013];
 *
 * @returns {number} the next index to be processed
 */
-export function copySegment(mat, array, segment) {
+function copySegment(mat, array, segment) {
   if (!segment || !segment.length) {
       return -1;
   }
