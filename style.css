@@ -101,7 +101,8 @@ section {
 }
 
 .official-test-buttons {
-  margin-top: 2rem;
+  margin-top: 1rem;
+  justify-content: center;
 }
 
 .lol-button {
