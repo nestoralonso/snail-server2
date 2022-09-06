@@ -82,6 +82,7 @@ section {
 
 .instructions {
   flex-grow: 0.55;
+  max-width: 50%;
 }
 
 .recv.msg > p {
