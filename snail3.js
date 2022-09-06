@@ -1,6 +1,8 @@
 //@ts-check
 /** @typedef {[number, number]} DirectionTuple */
 
+import { copySegment } from "./snail-utils.js";
+
 /**
  * A matrix represented as a SharedArrayBuffer
  * An ArrayBuffer cannot be nested
@@ -70,7 +72,7 @@ const DirectionName = new Map([
  * @param {CompactMatrix} m the source matrix
  * @returns {MatrixSegment[]}
  */
-export function snail(m) {
+export function snailSegments(m) {
     if (!m || m.rows < 1 || m.cols < 1) {
         return [];
     }
@@ -105,7 +107,7 @@ export function snail(m) {
 function runSnailCb(shabMatrix, callback) {
     const length = shabMatrix.rows * shabMatrix.cols;
 
-    const segments = snail(shabMatrix);
+    const segments = snailSegments(shabMatrix);
     console.log("🦊>>>> ~ runSnailCb ~ segments", segments.length)
 
     const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
@@ -144,6 +146,7 @@ function runSnailCb(shabMatrix, callback) {
     function run() {
         console.time("snail-run");
         for (const worker of pool) {
+            if (tasks.length < 1) return;
             const segment = tasks.shift();
             worker.postMessage({
                 command: "run",
@@ -171,7 +174,7 @@ export async function asyncSnail(matrix) {
         const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
         const array = new Int16Array(shab);
 
-        const segments = snail(matrix);
+        const segments = snailSegments(matrix);
         for (const s of segments) {
             copySegment(matrix, array, s);
         }
@@ -362,45 +365,6 @@ function promisify(fn) {
             fn.call(null, shabMatrix, customCallback);
         })
     }
-}
-
-/**
- *
- * @param {CompactMatrix} cMatrix target matrix
- * @param {number} i
- * @param {number} j
- * @returns
- */
-function getElement(cMatrix, i, j) {
-    const { data, cols } = cMatrix;
-
-    const ix = i * cols + j;
-    return data[ix];
-}
-
-/**
-* @param {CompactMatrix} mat
-* @param {Int16Array} array
-* @param {MatrixSegment} segment
-*
-* @returns {number} the next index to be processed
-*/
-function copySegment(mat, array, segment) {
-    if (!segment || !segment.length) {
-        return -1;
-    }
-
-    let [dir, arI, ci, cj, minI, maxI, minJ, maxJ] = segment;
-    const [di, dj] = dir;
-
-    do {
-        array[arI] = getElement(mat, ci, cj);
-        ci += di;
-        cj += dj;
-        arI++;
-    } while (ci >= minI && ci <= maxI && cj >= minJ && cj <= maxJ);
-
-    return arI;
 }
 
 (async function testLolAsyncs() {
