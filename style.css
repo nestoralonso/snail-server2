@@ -76,8 +76,8 @@ section {
 }
 
 #report {
-  top: 1rem;
   flex-grow: 0.35;
+  flex-shrink: 0;
 }
 
 .instructions {
