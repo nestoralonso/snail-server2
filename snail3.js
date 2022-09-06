@@ -113,7 +113,6 @@ function runSnailCb(shabMatrix, callback) {
 
     const pool = getWorkerPool();
 
-    const numTasks = segments.length;
     let tasksCompleted = 0;
     const tasks = segments;
 
@@ -123,19 +122,17 @@ function runSnailCb(shabMatrix, callback) {
             switch (type) {
                 case "result":
                     tasksCompleted++;
-                    if (tasksCompleted === numTasks) {
+                    if (tasks.length === 0) {
                         console.timeEnd("snail-run");
                         callback(null, array);
-                    } else {
-                        if (tasks.length > 0) {
-                            const segment = tasks.shift();
-                            this.postMessage({
-                                command: "run",
-                                segment,
-                                mat: shabMatrix,
-                                array,
-                            });
-                        }
+                    } else if (tasks.length > 0) {
+                        const segment = tasks.shift();
+                        this.postMessage({
+                            command: "run",
+                            segment,
+                            mat: shabMatrix,
+                            array,
+                        });
                     }
                     break;
                 default:
