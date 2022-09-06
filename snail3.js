@@ -308,10 +308,10 @@ function getWorkerPool() {
     if (pool.length > 0) return pool;
     for (let i = 0; i < NUM_WORKERS; i++) {
         // classic worker
-        const worker = new Worker("snail-worker.js");
+        // const worker = new Worker("snail-worker.js");
 
-        // module worker
-        // const worker = new Worker(new URL("./snail-worker.js", import.meta.url).href, { type: "module" });
+        // module worker (required by deno)
+        const worker = new Worker(new URL("./snail-worker.js", import.meta.url).href, { type: "module" });
         pool.push(worker);
     }
 
@@ -350,7 +350,7 @@ function promisify(fn) {
     cMatrix = createCMatrix(mat20x5());
     res = await asyncSnail(cMatrix);
     console.log(`Results [${cMatrix.rows}, ${cMatrix.cols}]`, res);
-})();
+});
 
 export function mat20x5() {
 
