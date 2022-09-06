@@ -1,7 +1,4 @@
 //@ts-check
-/// <reference no-default-lib="true" />
-/// <reference lib="deno.worker" />
-
 // @ts-ignore deno does not know about importScripts
 importScripts('./snail-utils.js')
 

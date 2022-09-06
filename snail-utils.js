@@ -90,7 +90,6 @@ export function copySegment(mat, array, segment) {
     } else if (dir === LEFT) {
         do {
             array[arI] = getElement(mat, ci, cj);
-            ci += di;
             cj += dj;
             arI++;
         } while (cj >= minJ);
