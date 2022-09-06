@@ -321,6 +321,9 @@ export function getWorkerPool() {
     return pool;
 }
 
+// init the worker pool before anything else
+getWorkerPool();
+
 /**
 * @param {{ (shabMatrix: CompactMatrix, callback: (errors: any, arrayResult: Int16Array) => void): void; call?: any; }} fn
 */

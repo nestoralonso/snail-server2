@@ -17,8 +17,6 @@ function equalIntArray(ab1, ab2) {
     return true;
 }
 
-const _somePool = getWorkerPool();
-
 cases
     .filter((c) => c.enabled)
     .forEach((c) =>
