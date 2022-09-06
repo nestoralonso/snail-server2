@@ -111,7 +111,7 @@ function runSnailCb(shabMatrix, callback) {
     const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
     const array = new Int16Array(shab);
 
-    const pool = getWorkerPool();
+    const pool = initWorkerPool();
 
     let tasksCompleted = 0;
     const tasks = segments;
@@ -160,7 +160,28 @@ function runSnailCb(shabMatrix, callback) {
 /**
  * @type {Function}
  */
-export const asyncSnail = promisify(runSnailCb);
+export const asyncSnailWorker = promisify(runSnailCb);
+
+/**
+* @param {CompactMatrix} matrix
+*/
+export async function asyncSnail(matrix) {
+    const length = matrix.rows * matrix.cols;
+    if (matrix.rows < 1000 && matrix.cols < 1000) {
+        const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
+        const array = new Int16Array(shab);
+
+        const segments = snail(matrix);
+        for (const s of segments) {
+            copySegment(matrix, array, s);
+        }
+
+        return Promise.resolve(array);
+    }
+
+    const result = await asyncSnailWorker(matrix);
+    return result;
+}
 
 /**
  * @param {DirectionTuple} dir
@@ -301,9 +322,9 @@ const NUM_WORKERS = 8;
 /**
 * @type {Worker[]}
 */
-    const pool = [];
+const pool = [];
 
-export function getWorkerPool() {
+export function initWorkerPool() {
     if (pool.length > 0) return pool;
 
     for (let i = 0; i < NUM_WORKERS; i++) {
@@ -319,7 +340,7 @@ export function getWorkerPool() {
 }
 
 // init the worker pool before anything else
-getWorkerPool();
+initWorkerPool();
 
 /**
 * @param {{ (shabMatrix: CompactMatrix, callback: (errors: any, arrayResult: Int16Array) => void): void; call?: any; }} fn
@@ -343,6 +364,45 @@ function promisify(fn) {
     }
 }
 
+/**
+ *
+ * @param {CompactMatrix} cMatrix target matrix
+ * @param {number} i
+ * @param {number} j
+ * @returns
+ */
+function getElement(cMatrix, i, j) {
+    const { data, cols } = cMatrix;
+
+    const ix = i * cols + j;
+    return data[ix];
+}
+
+/**
+* @param {CompactMatrix} mat
+* @param {Int16Array} array
+* @param {MatrixSegment} segment
+*
+* @returns {number} the next index to be processed
+*/
+function copySegment(mat, array, segment) {
+    if (!segment || !segment.length) {
+        return -1;
+    }
+
+    let [dir, arI, ci, cj, minI, maxI, minJ, maxJ] = segment;
+    const [di, dj] = dir;
+
+    do {
+        array[arI] = getElement(mat, ci, cj);
+        ci += di;
+        cj += dj;
+        arI++;
+    } while (ci >= minI && ci <= maxI && cj >= minJ && cj <= maxJ);
+
+    return arI;
+}
+
 (async function testLolAsyncs() {
     console.log("Running snail test");
     let cMatrix = createCMatrix(mat4x3());
@@ -353,6 +413,8 @@ function promisify(fn) {
     res = await asyncSnail(cMatrix);
     console.log(`Results [${cMatrix.rows}, ${cMatrix.cols}]`, res);
 });
+
+
 
 export function mat20x5() {
 
