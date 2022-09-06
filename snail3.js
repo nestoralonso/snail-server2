@@ -105,14 +105,14 @@ export function snail(m) {
 function runSnailCb(shabMatrix, callback) {
     const length = shabMatrix.rows * shabMatrix.cols;
 
-    let segments = snail(shabMatrix);
+    const segments = snail(shabMatrix);
 
     const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
     const array = new Int16Array(shab);
 
     const pool = getWorkerPool();
 
-    let numTasks = segments.length;
+    const numTasks = segments.length;
     let tasksCompleted = 0;
     const tasks = segments;
 
@@ -300,12 +300,12 @@ export function equalIntArrays(ab1, ab2) {
 }
 
 const NUM_WORKERS = 4;
-/**
-* @type {Worker[]}
-*/
-const pool = [];
+
 function getWorkerPool() {
-    if (pool.length > 0) return pool;
+    /**
+    * @type {Worker[]}
+    */
+    const pool = [];
     for (let i = 0; i < NUM_WORKERS; i++) {
         // classic worker
         // const worker = new Worker("snail-worker.js");
@@ -323,23 +323,23 @@ function getWorkerPool() {
 */
 function promisify(fn) {
     return (/** @type {((err: any, ...results: any[]) => void)[]} */ ...args) => {
-      return new Promise((resolve, reject) => {
-        /**
-           * @param {any} err
-           * @param {any[]} results
-           */
-        function customCallback(err, ...results) {
-          if (err) {
-            return reject(err)
-          }
-          return resolve(results.length === 1 ? results[0] : results)
-         }
-         args.push(customCallback)
-         // @ts-ignore
-         fn.call(this, ...args)
-       })
+        return new Promise((resolve, reject) => {
+            /**
+               * @param {any} err
+               * @param {any[]} results
+               */
+            function customCallback(err, ...results) {
+                if (err) {
+                    return reject(err)
+                }
+                return resolve(results.length === 1 ? results[0] : results)
+            }
+            args.push(customCallback)
+            // @ts-ignore
+            fn.call(this, ...args)
+        })
     }
- }
+}
 
 (async function testLolAsyncs() {
     console.log("Running snail test");
