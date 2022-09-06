@@ -1,4 +1,7 @@
 //@ts-check
+/// <reference no-default-lib="true" />
+/// <reference lib="deno.worker" />
+
 // @ts-ignore deno does not know about importScripts
 importScripts('./snail-utils.js')
 
@@ -13,7 +16,6 @@ importScripts('./snail-utils.js')
  * @property {number} cols number of cols
  *
 */
-
 
 // @ts-ignore
 self.onmessage = function (/** @type {{ data: { command: string; segment: any; mat: any; array: any; }; }} */ msg) {

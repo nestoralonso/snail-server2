@@ -1,7 +1,7 @@
 //@ts-check
-/** @typedef {[number, number]} DirectionTuple */
+import { copySegment, DOWN, LEFT, NONE_DIR, RIGHT, UP } from "./snail-utils.js";
 
-import { copySegment } from "./snail-utils.js";
+/** @typedef {[number, number]} DirectionTuple */
 
 /**
  * A matrix represented as a SharedArrayBuffer
@@ -30,21 +30,7 @@ import { copySegment } from "./snail-utils.js";
  *
  * @typedef {[DirectionTuple, DestArrayIndex, CurrI, CurrJ, MinI, MaxI, MinJ, MaxJ, SegmentLength]} MatrixSegment
 */
-// Following constants are vectors that indicate the direction of movement
-/** @type {DirectionTuple} */
-export const RIGHT = [0, 1];
 
-/** @type {DirectionTuple} */
-export const DOWN = [1, 0];
-
-/** @type {DirectionTuple} */
-export const LEFT = [0, -1];
-
-/** @type {DirectionTuple} */
-export const UP = [-1, 0];
-
-/** @type {DirectionTuple} */
-export const NONE_DIR = [0x013, 0x013];
 
 /** @type {MatrixSegment} */
 // @ts-ignore
