@@ -107,6 +107,9 @@ section {
 
 .official-test-buttons .lol-button {
   font-family: Brush Script MT;
+  font-size: 24px;
+  padding: 12px;
+  border-radius: 12px;
 }
 
 
@@ -139,6 +142,5 @@ section {
   background-image: -ms-linear-gradient(top, #5381b5, #0F1E36);
   background-image: -o-linear-gradient(top, #5381b5, #0F1E36);
   background-image: -webkit-gradient(to bottom, #5381b5, #0F1E36);
-  border-radius: 5px;
   text-decoration: none;
 }
