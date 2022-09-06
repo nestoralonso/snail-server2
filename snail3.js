@@ -307,7 +307,11 @@ const pool = [];
 function getWorkerPool() {
     if (pool.length > 0) return pool;
     for (let i = 0; i < NUM_WORKERS; i++) {
-        const worker = new Worker(new URL("./snail-worker.js", import.meta.url).href, { type: "module" });
+        // classic worker
+        const worker = new Worker("snail-worker.js");
+
+        // module worker
+        // const worker = new Worker(new URL("./snail-worker.js", import.meta.url).href, { type: "module" });
         pool.push(worker);
     }
 
