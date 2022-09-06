@@ -328,21 +328,20 @@ getWorkerPool();
 * @param {{ (shabMatrix: CompactMatrix, callback: (errors: any, arrayResult: Int16Array) => void): void; call?: any; }} fn
 */
 function promisify(fn) {
-    return (/** @type {((err: any, ...results: any[]) => void)[]} */ ...args) => {
+    return (/** @type {CompactMatrix} */ shabMatrix) => {
         return new Promise((resolve, reject) => {
             /**
                * @param {any} err
-               * @param {any[]} results
+               * @param {Int16Array} result
                */
-            function customCallback(err, ...results) {
+            function customCallback(err, result) {
                 if (err) {
                     return reject(err)
                 }
-                return resolve(results.length === 1 ? results[0] : results)
+                return resolve(result)
             }
-            args.push(customCallback)
-            // @ts-ignore
-            fn.call(this, ...args)
+
+            fn.call(null, shabMatrix, customCallback);
         })
     }
 }
