@@ -100,6 +100,10 @@ section {
   gap: 1rem;
 }
 
+.official-test-buttons {
+  margin-top: 2rem;
+}
+
 .lol-button {
   background: #6182A7;
   background-image: linear-gradient(top, #6182A7, #0F1E36);
