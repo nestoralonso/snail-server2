@@ -106,6 +106,7 @@ function runSnailCb(shabMatrix, callback) {
     const length = shabMatrix.rows * shabMatrix.cols;
 
     const segments = snail(shabMatrix);
+    console.log("🦊>>>> ~ runSnailCb ~ segments", segments.length)
 
     const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
     const array = new Int16Array(shab);
@@ -300,12 +301,14 @@ export function equalIntArrays(ab1, ab2) {
 }
 
 const NUM_WORKERS = 4;
-
-function getWorkerPool() {
-    /**
-    * @type {Worker[]}
-    */
+/**
+* @type {Worker[]}
+*/
     const pool = [];
+
+export function getWorkerPool() {
+    if (pool.length > 0) return pool;
+
     for (let i = 0; i < NUM_WORKERS; i++) {
         // classic worker
         // const worker = new Worker("snail-worker.js");

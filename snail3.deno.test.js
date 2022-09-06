@@ -1,6 +1,6 @@
 //@ts-check
 import { cases } from "./fixtures/cases.js";
-import { asyncSnail } from "./snail3.js";
+import { asyncSnail, getWorkerPool } from "./snail3.js";
 import { assertEquals } from "https://deno.land/std@0.154.0/testing/asserts.ts";
 
 
@@ -16,7 +16,10 @@ function equalIntArray(ab1, ab2) {
 
     return true;
 }
-  cases
+
+const _somePool = getWorkerPool();
+
+cases
     .filter((c) => c.enabled)
     .forEach((c) =>
         Deno.test(c.name, async () => {

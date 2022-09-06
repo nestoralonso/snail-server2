@@ -1,5 +1,32 @@
+//@ts-check
 import { createCMatrix, createIntArray, createRandMatrix } from "../snail3.js";
 
+/**
+ * A matrix represented as a SharedArrayBuffer
+ * An ArrayBuffer cannot be nested
+ * So the matrix will be represented as an m*n array
+ *
+ * @typedef {Object} CompactMatrix
+ * @property {Int16Array} data this will contain the matrix rows side by side
+ * @property {number} rows number of rows
+ * @property {number} cols number of cols
+ *
+*/
+
+/**
+ *
+ * @typedef {Object} TestCase
+ * @property {string} name the name of the test case
+ * @property {() => CompactMatrix} input a function that always produces a valid matrix
+ * @property {Int16Array} output destination array
+ * @property {boolean} enabled
+ * @property {boolean} [noCheck] used if we want to skip tests
+ *
+*/
+
+/**
+ * @type {TestCase[]}
+ */
 export const cases = [
     {
         name: "2x2 Matrix",
@@ -8,15 +35,14 @@ export const cases = [
             [4, 3],
         ]),
         output: createIntArray([1, 2, 3, 4]),
-        enabled: true
+        enabled: true,
     }, {
         name: "1x2 Matrix",
         input: () => createCMatrix([
             [1, 2],
         ]),
         output: createIntArray([1, 2]),
-        enabled: true
-    }, {
+        enabled: true,
     }, {
         name: "2x1 Matrix",
         input: () => createCMatrix([
@@ -24,7 +50,7 @@ export const cases = [
             [2],
         ]),
         output: createIntArray([1, 2]),
-        enabled: true
+        enabled: true,
     }, {
         name: "3x3 Matrix",
         input: () => createCMatrix([
@@ -33,7 +59,7 @@ export const cases = [
             [7, 6, 5]
         ]),
         output: createIntArray([1, 2, 3, 4, 5, 6, 7, 8, 9]),
-        enabled: true
+        enabled: false,
     }, {
         name: "4x4 Matrix",
         input: () => createCMatrix([
@@ -67,21 +93,25 @@ export const cases = [
         name: "1000x1000",
         input: () => createRandMatrix(1000, 1000),
         enabled: false,
+        output: new Int16Array(),
         noCheck: true,
     }, {
         name: "10000x10000",
         input: () => createRandMatrix(10000, 10000),
         enabled: false,
+        output: new Int16Array(),
         noCheck: true,
     }, {
         name: "10000x10000",
         input: () => createRandMatrix(10000, 10000),
         enabled: false,
+        output: new Int16Array(),
         noCheck: true,
     }, {
         name: "100000x30000",
         input: () => createRandMatrix(100000, 30000),
         enabled: false,
+        output: new Int16Array(),
         noCheck: true,
     }
 ];
