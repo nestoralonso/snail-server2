@@ -1,15 +1,6 @@
 //@ts-check
 import { cases } from "./fixtures/cases.js";
-import { asyncSnail } from "./snail3.js";
-
-function equalIntArray(ab1, ab2) {
-    if (ab1.length !== ab2.length) return false;
-    for (let i = 0; i < ab1.length; i++) {
-        if (ab1[i] !== ab2[i]) return false;
-    }
-
-    return true;
-}
+import { asyncSnail, equalIntArrays } from "./snail3.js";
 
 const {
     core: { describe, it, expect, run },
@@ -26,10 +17,10 @@ describe("Snail Sort", () => {
                 const matrix = c.input();
                 const curr = await asyncSnail(matrix);
 
-                if (!c.noCheck) {
-                    // console.log("👀", curr);
-                    // console.log("🤑", c.output);
-                    const isEqual = equalIntArray(curr, c.output);
+                if (!c.noCheck && c.output) {
+                    console.log("👀", curr);
+                    console.log("🤑", c.output);
+                    const isEqual = equalIntArrays(curr, c.output);
                     expect(isEqual).toEqual(true);
                 } else {
                     expect(1).toBe(1);
