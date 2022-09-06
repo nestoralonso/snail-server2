@@ -300,7 +300,7 @@ export function equalIntArrays(ab1, ab2) {
     return true;
 }
 
-const NUM_WORKERS = 4;
+const NUM_WORKERS = 8;
 /**
 * @type {Worker[]}
 */
