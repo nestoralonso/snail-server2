@@ -94,7 +94,6 @@ function runSnailCb(shabMatrix, callback) {
     const length = shabMatrix.rows * shabMatrix.cols;
 
     const segments = snailSegments(shabMatrix);
-    console.log("🦊>>>> ~ runSnailCb ~ segments", segments.length)
 
     const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
     const array = new Int16Array(shab);
@@ -102,6 +101,7 @@ function runSnailCb(shabMatrix, callback) {
     const pool = initWorkerPool();
 
     let tasksCompleted = 0;
+    const numTasks = segments.length;
     const tasks = segments;
 
     for (const worker of pool) {
@@ -110,11 +110,12 @@ function runSnailCb(shabMatrix, callback) {
             switch (type) {
                 case "result":
                     tasksCompleted++;
-                    if (tasks.length === 0) {
-                        console.timeEnd("snail-run");
+                    if (tasksCompleted === numTasks) {
                         callback(null, array);
-                    } else if (tasks.length > 0) {
+                    } else if (tasksCompleted < numTasks) {
                         const segment = tasks.shift();
+                        if (!segment) return;
+
                         this.postMessage({
                             command: "run",
                             segment,
@@ -126,13 +127,14 @@ function runSnailCb(shabMatrix, callback) {
                 default:
                     break;
             }
+
         }
     }
 
     function run() {
-        console.time("snail-run");
-        for (const worker of pool) {
-            if (tasks.length < 1) return;
+        const numStartWorkers = numTasks < NUM_WORKERS ? numTasks : NUM_WORKERS;
+        for (let i = 0; i < numStartWorkers; i++) {
+            const worker = pool[i];
             const segment = tasks.shift();
             worker.postMessage({
                 command: "run",
@@ -156,7 +158,7 @@ export const asyncSnailWorker = promisify(runSnailCb);
 */
 export async function asyncSnail(matrix) {
     const length = matrix.rows * matrix.cols;
-    if (matrix.rows < 1000 && matrix.cols < 1000) {
+    if (matrix.rows < 10 && matrix.cols < 10) {
         const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
         const array = new Int16Array(shab);
 

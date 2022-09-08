@@ -20,9 +20,6 @@ const LEFT = [0, -1];
 /** @type {DirectionTuple} */
 const UP = [-1, 0];
 
-/** @type {DirectionTuple} */
-const NONE_DIR = [0x013, 0x013];
-
 
 /**
  * A matrix represented as a SharedArrayBuffer
@@ -68,6 +65,23 @@ const NONE_DIR = [0x013, 0x013];
 }
 
 /**
+ *
+ * @param {number[]} a
+ * @param {number[]} b
+ * @returns {boolean} are equal or what
+ */
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length !== b.length) return false;
+
+  for (let i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+/**
 * @param {CompactMatrix} mat
 * @param {Int16Array} array
 * @param {MatrixSegment} segment
@@ -82,25 +96,25 @@ function copySegment(mat, array, segment) {
   let [dir, arI, ci, cj, minI, maxI, minJ, maxJ] = segment;
   const [di, dj] = dir;
 
-  if (dir === RIGHT) {
+  if (arraysEqual(dir, RIGHT)) {
       do {
           array[arI] = getElement(mat, ci, cj);
           cj += dj;
           arI++;
       } while (cj <= maxJ);
-  } else if (dir === DOWN) {
+  } else if (arraysEqual(dir, DOWN)) {
       do {
           array[arI] = getElement(mat, ci, cj);
           ci += di;
           arI++;
       } while (ci <= maxI);
-  } else if (dir === LEFT) {
+  } else if (arraysEqual(dir, LEFT)) {
       do {
           array[arI] = getElement(mat, ci, cj);
           cj += dj;
           arI++;
       } while (cj >= minJ);
-  } else if (dir === UP) {
+  } else if (arraysEqual(dir, UP)) {
       do {
           array[arI] = getElement(mat, ci, cj);
           ci += di;

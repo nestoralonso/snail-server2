@@ -17,10 +17,11 @@ describe("Snail Sort", () => {
                 const matrix = c.input();
                 const curr = await asyncSnail(matrix);
 
-                if (!c.noCheck && c.output) {
+                if (!c.noCheck) {
+                    const output = c.output();
                     console.log("👀", curr);
-                    console.log("🤑", c.output);
-                    const isEqual = equalIntArrays(curr, c.output);
+                    console.log("🤑", output);
+                    const isEqual = equalIntArrays(curr, output);
                     expect(isEqual).toEqual(true);
                 } else {
                     expect(1).toBe(1);

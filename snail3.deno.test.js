@@ -25,10 +25,11 @@ cases
             const matrix = c.input();
             const curr = await asyncSnail(matrix);
 
-            if (!c.noCheck && c.output) {
-                const isEqual = equalIntArray(curr, c.output);
-                // console.log("👀", curr);
-                // console.log("🤑", c.output);
+            if (!c.noCheck) {
+                const output = c.output();
+                const isEqual = equalIntArray(curr, output);
+                console.log("👀", curr);
+                console.log("🤑", output);
 
                 assertEquals(isEqual, true);
             } else {
