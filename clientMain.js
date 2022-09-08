@@ -2,8 +2,8 @@
 import { asyncSnail, createCMatrix, createIntArray, createRandMatrix, equalIntArrays } from "./snail3.js";
 
 /** @type {NodeListOf<HTMLButtonElement>} */
-const buttons = document.querySelectorAll(".run-test");
-buttons.forEach(b => b.addEventListener("click", runTest));
+const caseButtons = document.querySelectorAll(".run-test");
+caseButtons.forEach(b => b.addEventListener("click", runTest));
 
 /** @type {HTMLElement} */
 const resultsTextBlock = document.querySelector(".run-test-results") ?? document.body;
@@ -14,9 +14,7 @@ const resultsTextBlock = document.querySelector(".run-test-results") ?? document
 async function runTest(e) {
   clearText();
   const { rows, cols } = e.target.dataset;
-  buttons.forEach(b => {
-    b.disabled = true;
-  });
+  toggleTestButtons(false);
 
   let iniTime, duration;
   displayText(`Creating rand matrix...`);
@@ -31,9 +29,7 @@ async function runTest(e) {
   duration = Date.now() - iniTime;
   displayText(`snail sort computed in ${duration} ms`);
 
-  buttons.forEach(b => {
-    b.disabled = false;
-  });
+  toggleTestButtons(true);
   console.log("🤑 res", res.length)
 }
 
@@ -73,12 +69,20 @@ function clearText() {
   resultsTextBlock.innerHTML = '&nbsp;';
 }
 
+/**
+* @param {boolean} enabled
+*/
+function toggleTestButtons(enabled) {
+  /** @type {NodeListOf<HTMLButtonElement>} */
+  const buttons = document.querySelectorAll(".custom-tests-area button");
+  buttons.forEach(b => b.disabled = !enabled);
+}
+
 async function runBigTest(e) {
   const { rows, cols } = e.target.dataset;
-  buttons.forEach(b => {
-    b.disabled = true;
-  });
+  toggleTestButtons(false);
 
+  clearText();
   displayText(`Running... ${rows} test`);
 
   let iniTime = Date.now();
@@ -102,6 +106,7 @@ async function runBigTest(e) {
   const isEqual = equalIntArrays(ans, output);
 
   displayText(`🥁🤑 Results match?: ${isEqual}`);
+  toggleTestButtons(true);
 }
 
 console.log(window.report);
