@@ -79,10 +79,10 @@ function toggleTestButtons(enabled) {
 }
 
 async function runBigTest(e) {
-  const { rows } = e.target.dataset;
-  toggleTestButtons(false);
-
   clearText();
+  toggleTestButtons(false);
+  const { rows } = e.target.dataset;
+
   displayText(`Running... ${rows} test`);
 
   let iniTime = Date.now();
