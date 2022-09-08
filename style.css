@@ -143,3 +143,10 @@ section {
   background-image: -webkit-gradient(to bottom, #5381b5, #0F1E36);
   text-decoration: none;
 }
+
+
+.lol-button[disabled] {
+  background-color: #343434;
+  background-image: none;
+  color: #949494;
+}

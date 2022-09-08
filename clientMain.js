@@ -66,7 +66,7 @@ function displayText(msg) {
 }
 
 function clearText() {
-  resultsTextBlock.innerHTML = '&nbsp;';
+  resultsTextBlock.innerHTML = '';
 }
 
 /**
@@ -74,12 +74,12 @@ function clearText() {
 */
 function toggleTestButtons(enabled) {
   /** @type {NodeListOf<HTMLButtonElement>} */
-  const buttons = document.querySelectorAll(".custom-tests-area button");
+  const buttons = document.querySelectorAll('.custom-tests-area button');
   buttons.forEach(b => b.disabled = !enabled);
 }
 
 async function runBigTest(e) {
-  const { rows, cols } = e.target.dataset;
+  const { rows } = e.target.dataset;
   toggleTestButtons(false);
 
   clearText();
@@ -101,7 +101,7 @@ async function runBigTest(e) {
   iniTime = Date.now();
   const output = await loadIntArrayOutputTestCase(rows);
   duration = Date.now() - iniTime;
-  displayText(`🥁🤑 Loaded expected result in ${duration} ms`);
+  displayText(`🥁🤑 Loading output for test case took ${duration} ms`);
 
   const isEqual = equalIntArrays(ans, output);
 
