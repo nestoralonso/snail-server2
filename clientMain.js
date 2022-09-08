@@ -61,6 +61,9 @@ async function loadIntArrayOutputTestCase(size) {
   return output;
 }
 
+/**
+* @param {string} msg
+*/
 function displayText(msg) {
   resultsTextBlock.innerHTML += '🦊 ' + msg + '<br/>';
 }

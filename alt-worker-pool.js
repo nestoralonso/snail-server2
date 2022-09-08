@@ -3,7 +3,7 @@ const createWorkerpool = (options) => {
     const workers = new Map(Array.from({
         length: options.workers
     }).map(() => {
-        const w = new Worker(new URL("./alt-worker.js", importMeta.url).href, {
+        const w = new Worker(new URL("./alt-worker.js", import.meta.url).href, {
             type: "module"
         });
         const workerId = Math.random() * 1000 | 0;
@@ -83,5 +83,7 @@ const task = (n) => {
     }
     return fibonacci(n);
 };
+
+console.log("💀💀💸 hello from the working pool");
 pool.createTask(task).runAsync(30).then(console.log);
 
