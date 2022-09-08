@@ -1,4 +1,4 @@
-
+//@ts-check
 const createWorkerpool = (options) => {
     const workers = new Map(Array.from({
         length: options.workers
@@ -75,15 +75,24 @@ const createWorkerpool = (options) => {
     };
 };
 const pool = createWorkerpool({
-    workers: 5
+    workers: 2
 });
-const task = (n) => {
-    function fibonacci(n) {
-        return n < 2 ? n : fibonacci(n - 2) + fibonacci(n - 1);
-    }
-    return fibonacci(n);
+const task = ({array, index, val}) => {
+    console.log("🦊>>>> ~ funka ~ {array, i, val}", {array, index, val})
+    array[index] = val;
 };
 
 console.log("💀💀💸 hello from the working pool");
-pool.createTask(task).runAsync(30).then(console.log);
+const sab = new SharedArrayBuffer(12);
+const ar = new Int32Array(sab);
 
+const daTask = pool.createTask(task);
+
+(async function() {
+    await daTask.runAsync({array: ar, index: 0, val: 0xdead});
+    console.log("💰💰", ar)
+    await daTask.runAsync({array: ar, index: 1, val: 0xbeef});
+    console.log("💰💰", ar)
+    await daTask.runAsync({array: ar, index: 2, val: 0xbabe});
+    console.log("💰💰", ar)
+})()
