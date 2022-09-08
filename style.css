@@ -145,8 +145,10 @@ section {
 }
 
 
-.lol-button[disabled] {
+.lol-button[disabled],
+.lol-button:disabled {
   background-color: #343434;
   background-image: none;
   color: #949494;
+  cursor: wait;
 }
