@@ -9,7 +9,7 @@ buttons.forEach(b => b.addEventListener("click", runTest));
 const resultsTextBlock = document.querySelector(".run-test-results") ?? document.body;
 
 /**
- * {Event} e
+ * @param {Event} e
 */
 async function runTest(e) {
   clearText();
@@ -42,18 +42,24 @@ async function runTest(e) {
 const bigTestButton = document.querySelectorAll(".run-big-test");
 bigTestButton.forEach(b => b.addEventListener("click", runBigTest));
 
-async function loadIntMatrixInputTestCase() {
+/**
+* @param {number} size
+*/
+async function loadIntMatrixInputTestCase(size) {
   const inputReq = await
-    fetch("https://d3jrl7s14hrgo1.cloudfront.net/input-10000.json");
+    fetch(`https://d3jrl7s14hrgo1.cloudfront.net/input-${size}.json`);
 
   const inputJson = await inputReq.json();
   const input = createCMatrix(inputJson);
   return input;
 }
 
-async function loadIntArrayOutputTestCase() {
+/**
+* @param {number} size
+*/
+async function loadIntArrayOutputTestCase(size) {
   const outputReq = await
-    fetch("https://d3jrl7s14hrgo1.cloudfront.net/output-10000.json");
+    fetch(`https://d3jrl7s14hrgo1.cloudfront.net/output-${size}.json`);
   const outputJson = await outputReq.json();
   const output = createIntArray(outputJson);
   return output;
@@ -68,11 +74,16 @@ function clearText() {
 }
 
 async function runBigTest(e) {
-  displayText("Running...");
+  const { rows, cols } = e.target.dataset;
+  buttons.forEach(b => {
+    b.disabled = true;
+  });
+
+  displayText(`Running... ${rows} test`);
 
   let iniTime = Date.now();
   displayText(`Loading input for test case...`);
-  const input = await loadIntMatrixInputTestCase();
+  const input = await loadIntMatrixInputTestCase(rows);
   let duration = Date.now() - iniTime;
   displayText(`Loaded test case in ${duration} ms`);
 
@@ -84,7 +95,7 @@ async function runBigTest(e) {
 
   displayText(`Loading output for test case...`);
   iniTime = Date.now();
-  const output = await loadIntArrayOutputTestCase();
+  const output = await loadIntArrayOutputTestCase(rows);
   duration = Date.now() - iniTime;
   displayText(`🥁🤑 Loaded expected result in ${duration} ms`);
 
