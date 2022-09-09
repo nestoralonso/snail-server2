@@ -158,7 +158,7 @@ export const asyncSnailWorker = promisify(runSnailCb);
 */
 export async function asyncSnail(matrix) {
     const length = matrix.rows * matrix.cols;
-    if (matrix.rows < 10 && matrix.cols < 10) {
+    if (matrix.rows < 25000 && matrix.cols < 25000) {
         const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
         const array = new Int16Array(shab);
 
@@ -259,7 +259,8 @@ export function createCMatrix(jsMatrix) {
  */
 export function createRandMatrix(rows, cols) {
     let ix = 0;
-    const byteLength = Int16Array.BYTES_PER_ELEMENT * rows * cols;
+    let length = rows * cols;
+    const byteLength = Int16Array.BYTES_PER_ELEMENT * length;
     const sharedArrayBuffer = new SharedArrayBuffer(byteLength);
     const data = new Int16Array(sharedArrayBuffer);
 
