@@ -1,5 +1,5 @@
 //@ts-check
-import { cases } from "./fixtures/cases.js";
+import { cases } from "../fixtures/cases.js";
 import { asyncSnail, initWorkerPool } from "./snail3.js";
 import { assertEquals } from "https://deno.land/std@0.154.0/testing/asserts.ts";
 

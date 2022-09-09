@@ -1,5 +1,5 @@
 //@ts-check
-import { createCMatrix, createIntArray, createRandMatrix } from "../snail3.js";
+import { createCMatrix, createIntArray, createRandMatrix } from "../src/snail3.js";
 
 /**
  * A matrix represented as a SharedArrayBuffer
