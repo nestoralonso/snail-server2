@@ -1,5 +1,5 @@
 //@ts-check
-import { cases } from "./fixtures/cases.js";
+import { cases } from "../fixtures/cases.js";
 import { asyncSnail, equalIntArrays } from "./snail3.js";
 
 const {
@@ -8,7 +8,6 @@ const {
 } = window.jestLite;
 
 describe("Snail Sort", () => {
-    // jest.setTimeout(180000);
     cases
         .filter((c) => c.enabled)
         .forEach((c) =>
