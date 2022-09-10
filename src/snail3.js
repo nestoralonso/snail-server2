@@ -149,29 +149,39 @@ function runSnailCb(shabMatrix, callback) {
 }
 
 /**
+* @param {CompactMatrix} matrix
+ *
  * @type {Function}
  */
-export const asyncSnailWorker = promisify(runSnailCb);
+export const workersSnail = promisify(runSnailCb);
 
 /**
 * @param {CompactMatrix} matrix
 */
 export async function asyncSnail(matrix) {
-    const length = matrix.rows * matrix.cols;
     if (matrix.rows < 25000 && matrix.cols < 25000) {
-        const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
-        const array = new Int16Array(shab);
-
-        const segments = snailSegments(matrix);
-        for (const s of segments) {
-            copySegment(matrix, array, s);
-        }
-
-        return Promise.resolve(array);
+        // use old sequential code, faster for small matrices
+        return classicSnail(matrix);
     }
 
-    const result = await asyncSnailWorker(matrix);
+    const result = await workersSnail(matrix);
     return result;
+}
+
+/**
+* @param {CompactMatrix} matrix
+*/
+export async function classicSnail(matrix) {
+    const length = matrix.rows * matrix.cols;
+    const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
+    const array = new Int16Array(shab);
+
+    const segments = snailSegments(matrix);
+    for (const s of segments) {
+        copySegment(matrix, array, s);
+    }
+
+    return await Promise.resolve(array);
 }
 
 /**
@@ -259,7 +269,7 @@ export function createCMatrix(jsMatrix) {
  */
 export function createRandMatrix(rows, cols) {
     let ix = 0;
-    let length = rows * cols;
+    const length = rows * cols;
     const byteLength = Int16Array.BYTES_PER_ELEMENT * length;
     const sharedArrayBuffer = new SharedArrayBuffer(byteLength);
     const data = new Int16Array(sharedArrayBuffer);
@@ -332,7 +342,7 @@ export function initWorkerPool() {
 }
 
 // init the worker pool before anything else
-initWorkerPool();
+// initWorkerPool();
 
 /**
 * @param {{ (shabMatrix: CompactMatrix, callback: (errors: any, arrayResult: Int16Array) => void): void; call?: any; }} fn

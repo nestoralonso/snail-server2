@@ -17,6 +17,8 @@ function equalIntArray(ab1, ab2) {
     return true;
 }
 
+initWorkerPool();
+
 cases
     .filter((c) => c.enabled)
     .forEach((c) =>

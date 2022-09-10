@@ -1,6 +1,6 @@
 import { parse } from "https://deno.land/std@0.154.0/flags/mod.ts";
 
-import { asyncSnail, createCMatrix, createIntArray, createRandMatrix, equalIntArrays } from "./snail3.js";
+import { asyncSnail, workersSnail, classicSnail, createCMatrix, createIntArray, createRandMatrix, equalIntArrays } from "./snail3.js";
 
 const USAGE = `
 Usage:
@@ -9,10 +9,16 @@ snail --rows 10 --cols 10
 
 # RUNS WITH A TEST CASE
 snail --testInput fixtures/input-1000.json --testOutput=fixtures/output-1000.json
+
+# RUNS WITH THE CLASSIC SYNC ALGORITHM
+snail --algorithm=classic --rows 10 --cols 10
 `;
 
-const parsedArgs = parse(Deno.args);
-let { rows, cols, testInput, testOutput } = parsedArgs;
+const parsedArgs = parse(Deno.args, {
+    default: {"algorithm": "auto"}
+});
+let { rows, cols, testInput, testOutput, algorithm } = parsedArgs;
+console.log("🦊>>>> ~ parsedArgs", parsedArgs)
 const fileMode = Boolean(testInput && testOutput);
 const randMode = Boolean(rows && cols);
 
@@ -45,7 +51,15 @@ if (!mat) {
 }
 
 console.time("snail-sort");
-const arr = await asyncSnail(mat);
+
+let func = asyncSnail;
+if (algorithm === 'classic') {
+    func = classicSnail;
+} else if (algorithm === 'workers') {
+    //@ts-ignore
+    func = workersSnail;
+}
+const arr = await func(mat);
 console.timeEnd("snail-sort");
 console.log("💸💲💸 array length ", arr.length);
 console.log("💸💲💸 first 10 elements", arr.slice(0, 10));
