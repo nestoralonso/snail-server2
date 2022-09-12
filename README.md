@@ -1,12 +1,16 @@
-To make it work on codesandbox, click "Open in a new Tab" in the minibrowser:
+### Running on codesandbox
 
-### To run in a Terminal requires deno
+To run it on codesandbox, click "Open in a new Tab" in the minibrowser, this allow the server side to set the correct headers so SharedArrayBuffer works on the browser. This project is implemented as a codesandbox project.
+
+### To run in a Terminal
+
+This project requires deno. This project does not run on nodejs because of the use of WebWorkers, Node implements a different Worker library that is not compatible with the browser one. to install deno on macOS
+
 ```bash
 brew install deno
 ```
 ### Running the deno tests
 
-This project does not run on nodejs because of the standard WebWorkers that are used.
 To run the test suite on deno type:
 ```bash
 deno test --allow-read src/snail3.deno.test.js
