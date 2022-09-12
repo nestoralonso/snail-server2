@@ -1,5 +1,5 @@
 //@ts-check
-import { asyncSnail, createCMatrix, createIntArray, createRandMatrix, equalIntArrays } from "./snail3.js";
+import { asyncSnail, classicSnail, createCMatrix, createIntArray, createRandCMatrix, equalIntArrays, workersSnail } from "./snail3.js";
 
 /** @type {NodeListOf<HTMLButtonElement>} */
 const caseButtons = document.querySelectorAll(".run-test");
@@ -7,6 +7,16 @@ caseButtons.forEach(b => b.addEventListener("click", runTest));
 
 /** @type {HTMLElement} */
 const resultsTextBlock = document.querySelector(".run-test-results") ?? document.body;
+
+
+const snailFunc = asyncSnail;
+const params = new URLSearchParams(window.location.search);
+const algorithm = params.algorithm;
+if (algorithm === 'classic') {
+    func = classicSnail;
+} else if (algorithm === 'workers') {
+    //@ts-ignore
+    func = workersSnail;
 
 /**
  * @param {Event} e
@@ -19,13 +29,13 @@ async function runTest(e) {
   let iniTime, duration;
   displayText(`Creating rand matrix...`);
   iniTime = Date.now();
-  let mat = createRandMatrix(parseInt(rows), parseInt(cols));
+  let mat = createRandCMatrix(parseInt(rows), parseInt(cols));
   duration = Date.now() - iniTime;
   displayText(`rand matrix computed in ${duration} ms`);
 
   displayText(`Computing snail sort...`);
   iniTime = Date.now();
-  let res = await asyncSnail(mat);
+  let res = await snailFunc(mat);
   duration = Date.now() - iniTime;
   displayText(`snail sort computed in ${duration} ms`);
 
@@ -96,7 +106,7 @@ async function runBigTest(e) {
 
   displayText(`Computing spiral sort...`);
   iniTime = Date.now();
-  const ans = await asyncSnail(input);
+  const ans = await snailFunc(input);
   duration = Date.now() - iniTime;
   displayText(`🥁🤑 Snail duration ${duration} ms`);
 
