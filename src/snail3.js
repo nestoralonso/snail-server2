@@ -164,7 +164,8 @@ export const workersSnail = promisify(runSnailCb);
 * @param {CompactMatrix} matrix
 */
 export async function asyncSnail(matrix) {
-    if (matrix.rows < 0 && matrix.cols < 0) {
+    const length = matrix.rows * matrix.cols;
+    if (length < 676_000_000) {
         // use old sequential code, faster for small matrices
         return classicSnail(matrix);
     }
@@ -387,54 +388,3 @@ function promisify(fn) {
         })
     }
 }
-
-(async function testLolAsyncs() {
-    console.log("Running snail test");
-    let cMatrix = createCMatrix(mat4x3());
-    let res = await asyncSnail(cMatrix);
-    console.log(`Results [${cMatrix.rows}, ${cMatrix.cols}]`, res);
-
-    cMatrix = createCMatrix(mat20x5());
-    res = await asyncSnail(cMatrix);
-    console.log(`Results [${cMatrix.rows}, ${cMatrix.cols}]`, res);
-});
-
-
-
-export function mat20x5() {
-
-    const m = [
-        [1, 2, 3, 4, 5],
-        [46, 47, 48, 49, 6],
-        [45, 84, 85, 50, 7],
-        [44, 83, 86, 51, 8],
-        [43, 82, 87, 52, 9],
-        [42, 81, 88, 53, 10],
-        [41, 80, 89, 54, 11],
-        [40, 79, 90, 55, 12],
-        [39, 78, 91, 56, 13],
-        [38, 77, 92, 57, 14],
-        [37, 76, 93, 58, 15],
-        [36, 75, 94, 59, 16],
-        [35, 74, 95, 60, 17],
-        [34, 73, 96, 61, 18],
-        [33, 72, 97, 62, 19],
-        [32, 71, 98, 63, 20],
-        [31, 70, 99, 64, 21],
-        [30, 69, 100, 65, 22],
-        [29, 68, 67, 66, 23],
-        [28, 27, 26, 25, 24]
-    ];
-
-    return m;
-}
-
-export function mat4x3() {
-    return [
-        [1, 2, 3],
-        [10, 11, 4],
-        [9, 12, 5],
-        [8, 7, 6]
-    ];
-}
-
