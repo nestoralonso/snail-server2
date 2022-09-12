@@ -9,14 +9,15 @@ caseButtons.forEach(b => b.addEventListener("click", runTest));
 const resultsTextBlock = document.querySelector(".run-test-results") ?? document.body;
 
 
-const snailFunc = asyncSnail;
+let snailFunc = asyncSnail;
 const params = new URLSearchParams(window.location.search);
 const algorithm = params.algorithm;
 if (algorithm === 'classic') {
-    func = classicSnail;
+    snailFunc = classicSnail;
 } else if (algorithm === 'workers') {
     //@ts-ignore
-    func = workersSnail;
+    snailFunc = workersSnail;
+}
 
 /**
  * @param {Event} e

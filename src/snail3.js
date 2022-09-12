@@ -154,11 +154,19 @@ function runSnailCb(shabMatrix, callback) {
 }
 
 /**
-* @param {CompactMatrix} matrix
+ * @param {CompactMatrix} matrix
  *
- * @type {Function}
  */
-export const workersSnail = promisify(runSnailCb);
+export async function workersSnail(matrix) {
+    const res = await new Promise((resolve => {
+        runSnailCb(matrix, (errs, result) => {
+            resolve(result);
+        })
+    }));
+
+    await sleep(1);
+    return res;
+};
 
 /**
 * @param {CompactMatrix} matrix
@@ -194,7 +202,7 @@ export async function classicSnail(matrix) {
  * @param {DirectionTuple} dir
  */
 // @ts-ignore
-function directionToString(dir) {
+export function directionToString(dir) {
     return DirectionName.get(dir);
 }
 
@@ -364,27 +372,12 @@ export function initWorkerPool() {
     return pool;
 }
 
-// init the worker pool before anything else
-// initWorkerPool();
 
 /**
-* @param {{ (shabMatrix: CompactMatrix, callback: (errors: any, arrayResult: Int16Array) => void): void; call?: any; }} fn
+* @param {number} delay
 */
-function promisify(fn) {
-    return (/** @type {CompactMatrix} */ shabMatrix) => {
-        return new Promise((resolve, reject) => {
-            /**
-               * @param {any} err
-               * @param {Int16Array} result
-               */
-            function customCallback(err, result) {
-                if (err) {
-                    return reject(err)
-                }
-                return resolve(result)
-            }
-
-            fn.call(null, shabMatrix, customCallback);
-        })
-    }
+function sleep(delay) {
+    return new Promise(resolve => {
+        setTimeout(resolve, delay);
+    });
 }
