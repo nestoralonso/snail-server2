@@ -64,22 +64,30 @@ export function* snailSegments(m) {
     }
 
     const length = m.rows * m.cols;
-    let i = 0, j = 0;
-    let maxJ = m.cols - 1, maxI = m.rows - 1;
-    let minJ = 0, minI = 0;
-    let curDir = RIGHT;
+    const i = 0, j = 0;
+    const maxJ = m.cols - 1, maxI = m.rows - 1;
+    const minJ = 0, minI = 0;
+    const curDir = RIGHT;
 
-    let arI = 0;
 
     // initial segment length
     let segLength = m.cols;
     let cnt = 0;
+    let arI = 0;
+    /**
+     * @type {MatrixSegment}
+     */
+    let segment = [curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength];
     do {
-        console.log("🦊>>>> ~ prev to yield - segment", JSON.stringify([curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength]))
-        yield [curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength];
+        yield segment;
 
+        arI = segment[1];
+        // @ts-ignore ts doesnt know that segLength is the last index?
+        segLength = segment.at(-1);
         arI += segLength;
-        [curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength] = nextSegment([curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength]);
+        segment[1] = arI;
+
+        segment = nextSegment(segment);
         cnt++;
     } while (arI < length);
 
@@ -223,6 +231,7 @@ function nextDirection(currDir) {
  */
 function nextSegment([dir, arI, ci, cj, minI, maxI, minJ, maxJ, _length]) {
     const nextDir = nextDirection(dir);
+
     let length = 0;
     if (nextDir === DOWN) {
         cj = maxJ;
