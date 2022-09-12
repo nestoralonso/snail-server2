@@ -1,5 +1,5 @@
 //@ts-check
-import { createCMatrix, createIntArray, createRandMatrix } from "../src/snail3.js";
+import { createCMatrix, createIntArray, createRandCMatrix } from "../src/snail3.js";
 
 /**
  * A matrix represented as a SharedArrayBuffer
@@ -132,13 +132,13 @@ export const cases = [
         noCheck: true,
     }, {
         name: "rand 10000x10000",
-        input: () => createRandMatrix(10000, 10000),
+        input: () => createRandCMatrix(10000, 10000),
         enabled: false,
         output: () => new Int16Array(),
         noCheck: true,
     }, {
         name: "100000x30000",
-        input: () => createRandMatrix(100000, 30000),
+        input: () => createRandCMatrix(100000, 30000),
         enabled: false,
         output: () => new Int16Array(),
         noCheck: true,

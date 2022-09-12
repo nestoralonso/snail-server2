@@ -1,6 +1,6 @@
 import { parse } from "https://deno.land/std@0.154.0/flags/mod.ts";
 
-import { asyncSnail, workersSnail, classicSnail, createCMatrix, createIntArray, createRandMatrix, equalIntArrays } from "./snail3.js";
+import { asyncSnail, workersSnail, classicSnail, createCMatrix, createIntArray, createRandCMatrix, equalIntArrays } from "./snail3.js";
 
 const USAGE = `
 Usage:
@@ -35,7 +35,7 @@ if (rows && cols) {
     console.log("🦊>>>> ~ { rows, cols }", { rows, cols })
 
     console.time("create-rand-matrix");
-    mat = createRandMatrix(rows, cols);
+    mat = createRandCMatrix(rows, cols);
     console.timeEnd("create-rand-matrix");
 }
 

@@ -289,7 +289,7 @@ export function createCMatrix(jsMatrix) {
  *
  * @returns {CompactMatrix} a matrix encoded as a unidimnesional array
  */
-export function createRandMatrix(rows, cols) {
+export function createRandCMatrix(rows, cols) {
     let ix = 0;
     const length = rows * cols;
     const byteLength = Int16Array.BYTES_PER_ELEMENT * length;
@@ -342,7 +342,7 @@ export function equalIntArrays(ab1, ab2) {
     return true;
 }
 
-const NUM_WORKERS = 4;
+const NUM_WORKERS = 16;
 /**
 * @type {Worker[]}
 */
