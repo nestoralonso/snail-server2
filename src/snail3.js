@@ -164,7 +164,7 @@ export async function workersSnail(matrix) {
         })
     }));
 
-    await sleep(1);
+    console.log(`res length ${res.length}`);
     return res;
 };
 
