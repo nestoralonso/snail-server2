@@ -59,7 +59,7 @@ export const cases = [
             [7, 6, 5]
         ]),
         output: () => createIntArray([1, 2, 3, 4, 5, 6, 7, 8, 9]),
-        enabled: false,
+        enabled: true,
     }, {
         name: "4x4 Matrix",
         input: () => createCMatrix([
@@ -101,7 +101,7 @@ export const cases = [
         enabled: false,
     }, {
         name: "1000x1000",
-        enabled: false,
+        enabled: true,
         input: () => {
             const decoder = new TextDecoder("utf-8");
             const jsInput = JSON.parse(decoder.decode(Deno.readFileSync('./fixtures/input-1000.json')));
