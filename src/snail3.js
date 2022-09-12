@@ -75,6 +75,7 @@ export function* snailSegments(m) {
     let segLength = m.cols;
     let cnt = 0;
     do {
+        console.log("🦊>>>> ~ prev to yield - segment", JSON.stringify([curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength]))
         yield [curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength];
 
         arI += segLength;
