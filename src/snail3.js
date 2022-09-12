@@ -53,12 +53,12 @@ const DirectionName = new Map([
 ]);
 
 /**
- * Traverses a matrix in a spiral pattern, returns the result as an array starting at 0, 0 clockwise direction
+ * Traverses a matrix in a spiral pattern, returns the result as a generator starting at 0, 0 clockwise direction
  *
  * @param {CompactMatrix} m the source matrix
- * @returns {MatrixSegment[]}
+ * @returns {Generator<MatrixSegment>}
  */
-export function snailSegments(m) {
+export function* snailSegments(m) {
     if (!m || m.rows < 1 || m.cols < 1) {
         return [];
     }
@@ -70,19 +70,19 @@ export function snailSegments(m) {
     let curDir = RIGHT;
 
     let arI = 0;
-    /** @type {MatrixSegment[]} */
-    const resSegments = [];
 
     // initial segment length
     let segLength = m.cols;
-
+    let cnt = 0;
     do {
-        resSegments.push([curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength]);
+        yield [curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength];
+
         arI += segLength;
         [curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength] = nextSegment([curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength]);
+        cnt++;
     } while (arI < length);
 
-    return resSegments;
+    return cnt;
 }
 
 
@@ -91,39 +91,39 @@ export function snailSegments(m) {
  * @param {(errors: any, arrayResult: Int16Array) => void} callback
  */
 function runSnailCb(shabMatrix, callback) {
+
     const length = shabMatrix.rows * shabMatrix.cols;
 
     const segments = snailSegments(shabMatrix);
-
     const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
     const array = new Int16Array(shab);
 
     const pool = initWorkerPool();
 
     let tasksCompleted = 0;
-    const numTasks = segments.length;
     const tasks = segments;
+    const numTasks = numSegments(shabMatrix.rows, shabMatrix.cols);
 
     for (const worker of pool) {
         worker.onmessage = function (/** @type {{ data: { type: string; }; }} */ msg) {
             const { type } = msg.data;
             switch (type) {
-                case "result":
+                case "result": {
                     tasksCompleted++;
+                    const { value: task } = tasks.next();
+
                     if (tasksCompleted === numTasks) {
                         callback(null, array);
                     } else if (tasksCompleted < numTasks) {
-                        const segment = tasks.shift();
-                        if (!segment) return;
-
                         this.postMessage({
                             command: "run",
-                            segment,
+                            segment: task,
                             mat: shabMatrix,
                             array,
                         });
                     }
                     break;
+                }
                 default:
                     break;
             }
@@ -135,13 +135,18 @@ function runSnailCb(shabMatrix, callback) {
         const numStartWorkers = numTasks < NUM_WORKERS ? numTasks : NUM_WORKERS;
         for (let i = 0; i < numStartWorkers; i++) {
             const worker = pool[i];
-            const segment = tasks.shift();
+            const next = segments.next();
+            const task = next.value;
+
+            const segment = task;
             worker.postMessage({
                 command: "run",
                 mat: shabMatrix,
                 array,
                 segment,
             });
+
+            i++;
         }
     }
 
@@ -159,7 +164,7 @@ export const workersSnail = promisify(runSnailCb);
 * @param {CompactMatrix} matrix
 */
 export async function asyncSnail(matrix) {
-    if (matrix.rows < 25000 && matrix.cols < 25000) {
+    if (matrix.rows < 0 && matrix.cols < 0) {
         // use old sequential code, faster for small matrices
         return classicSnail(matrix);
     }
@@ -232,6 +237,23 @@ function nextSegment([dir, arI, ci, cj, minI, maxI, minJ, maxJ, _length]) {
     }
 
     return [nextDir, arI, ci, cj, minI, maxI, minJ, maxJ, length];
+}
+
+
+/**
+* Estimates the number of segment that will be generated
+
+* @param {number} rows
+* @param {number} cols
+*/
+function numSegments(rows, cols) {
+    if (rows > cols) {
+        const min = Math.min(rows, cols) * 2;
+
+        return min;
+    }
+
+    return Math.min(rows, cols) * 2 - 1;
 }
 
 /**
@@ -320,7 +342,7 @@ export function equalIntArrays(ab1, ab2) {
     return true;
 }
 
-const NUM_WORKERS = 8;
+const NUM_WORKERS = 4;
 /**
 * @type {Worker[]}
 */
