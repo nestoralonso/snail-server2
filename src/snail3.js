@@ -165,7 +165,7 @@ export const workersSnail = promisify(runSnailCb);
 */
 export async function asyncSnail(matrix) {
     const length = matrix.rows * matrix.cols;
-    if (length < 676_000_000) {
+    if (length < 1) {
         // use old sequential code, faster for small matrices
         return classicSnail(matrix);
     }
