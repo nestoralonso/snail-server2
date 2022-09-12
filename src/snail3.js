@@ -173,7 +173,7 @@ export async function workersSnail(matrix) {
 */
 export async function asyncSnail(matrix) {
     const length = matrix.rows * matrix.cols;
-    if (length < 1) {
+    if (length < 676_000_000) {
         // use old sequential code, faster for small matrices
         return classicSnail(matrix);
     }
@@ -376,7 +376,7 @@ export function initWorkerPool() {
 /**
 * @param {number} delay
 */
-function sleep(delay) {
+export function sleep(delay) {
     return new Promise(resolve => {
         setTimeout(resolve, delay);
     });
