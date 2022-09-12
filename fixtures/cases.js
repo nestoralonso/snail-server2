@@ -101,7 +101,7 @@ export const cases = [
         enabled: false,
     }, {
         name: "1000x1000",
-        enabled: true,
+        enabled: false,
         input: () => {
             const decoder = new TextDecoder("utf-8");
             const jsInput = JSON.parse(decoder.decode(Deno.readFileSync('./fixtures/input-1000.json')));
