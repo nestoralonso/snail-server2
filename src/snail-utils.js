@@ -1,21 +1,42 @@
 //@ts-check
-/** @typedef {[number, number]} DirectionTuple */
+/** @typedef {[number, number]} Delta */
+/** @typedef {number} DirectionTuple */
 
 // Following constants are vectors that indicate the direction of movement
-/** @type {DirectionTuple} */
-export const RIGHT = [0, 1];
+/** @type {Delta} */
+export const DELTA_RIGHT = [0, 1];
 
-/** @type {DirectionTuple} */
-export const DOWN = [1, 0];
+/** @type {Delta} */
+export const DELTA_DOWN = [1, 0];
 
-/** @type {DirectionTuple} */
-export const LEFT = [0, -1];
+/** @type {Delta} */
+export const DELTA_LEFT = [0, -1];
 
-/** @type {DirectionTuple} */
-export const UP = [-1, 0];
+/** @type {Delta} */
+export const DELTA_UP = [-1, 0];
 
-/** @type {DirectionTuple} */
-export const NONE_DIR = [0x013, 0x013];
+/** @type {Delta} */
+export const DELTA_NONE = [-0x013, -0x013];
+
+export const RIGHT = 0;
+export const DOWN = 1;
+export const LEFT = 2;
+export const UP = 3;
+export const NONE_DIR = -1;
+
+const DeltaMap = new Map([
+    [RIGHT, DELTA_RIGHT],
+    [DOWN, DELTA_DOWN],
+    [LEFT, DELTA_LEFT],
+    [UP, DELTA_UP],
+]);
+
+/**
+* @param {DirectionTuple} dir
+*/
+function getDelta(dir) {
+    return DeltaMap.get(dir) ?? DELTA_NONE;
+}
 
 /**
  * A matrix represented as a SharedArrayBuffer
@@ -73,7 +94,7 @@ export function copySegment(mat, array, segment) {
     }
 
     let [dir, arI, ci, cj, minI, maxI, minJ, maxJ] = segment;
-    const [di, dj] = dir;
+    const [di, dj] = getDelta(dir);
 
     if (dir === RIGHT) {
         do {
@@ -99,6 +120,8 @@ export function copySegment(mat, array, segment) {
             ci += di;
             arI++;
         } while (ci >= minI);
+    } else {
+        throw new Error(`Unknown direction ${dir}`);
     }
     return arI;
 }

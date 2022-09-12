@@ -1,8 +1,6 @@
 //@ts-check
 import { copySegment, DOWN, LEFT, NONE_DIR, RIGHT, UP } from "./snail-utils.js";
 
-/** @typedef {[number, number]} DirectionTuple */
-
 /**
  * A matrix represented as a SharedArrayBuffer
  * An ArrayBuffer cannot be nested
@@ -14,6 +12,9 @@ import { copySegment, DOWN, LEFT, NONE_DIR, RIGHT, UP } from "./snail-utils.js";
  * @property {number} cols number of cols
  *
 */
+
+
+/** @typedef {number} DirectionTuple */
 
 /**
  * MatrixSegment an subsegment of a row or column of a matrix

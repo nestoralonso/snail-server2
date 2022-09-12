@@ -1,24 +1,33 @@
 //@ts-check
-
+/** @typedef {[number, number]} Delta */
 
 // deno is complaining about importScripts, disable for the time being
 // importScripts('./snail-utils.js')
 
-/** @typedef {[number, number]} DirectionTuple */
+/** @typedef {number} DirectionTuple */
 
 
 // Following constants are vectors that indicate the direction of movement
-/** @type {DirectionTuple} */
-const RIGHT = [0, 1];
+/** @type {Delta} */
+export const DELTA_RIGHT = [0, 1];
 
-/** @type {DirectionTuple} */
-const DOWN = [1, 0];
+/** @type {Delta} */
+export const DELTA_DOWN = [1, 0];
 
-/** @type {DirectionTuple} */
-const LEFT = [0, -1];
+/** @type {Delta} */
+export const DELTA_LEFT = [0, -1];
 
-/** @type {DirectionTuple} */
-const UP = [-1, 0];
+/** @type {Delta} */
+export const DELTA_UP = [-1, 0];
+
+/** @type {Delta} */
+export const DELTA_NONE = [-0x013, -0x013];
+
+export const RIGHT = 0;
+export const DOWN = 1;
+export const LEFT = 2;
+export const UP = 3;
+export const NONE_DIR = -1;
 
 
 /**
@@ -49,6 +58,19 @@ const UP = [-1, 0];
  * @typedef {[DirectionTuple, DestArrayIndex, CurrI, CurrJ, MinI, MaxI, MinJ, MaxJ, SegmentLength]} MatrixSegment
 */
 
+const DeltaMap = new Map([
+  [RIGHT, DELTA_RIGHT],
+  [DOWN, DELTA_DOWN],
+  [LEFT, DELTA_LEFT],
+  [UP, DELTA_UP],
+]);
+
+/**
+* @param {DirectionTuple} dir
+*/
+function getDelta(dir) {
+  return DeltaMap.get(dir) ?? DELTA_NONE;
+}
 
 /**
  *
@@ -94,33 +116,36 @@ function copySegment(mat, array, segment) {
   }
 
   let [dir, arI, ci, cj, minI, maxI, minJ, maxJ] = segment;
-  const [di, dj] = dir;
+  const [di, dj] = getDelta(dir);
 
-  if (arraysEqual(dir, RIGHT)) {
+  if (dir === RIGHT) {
       do {
           array[arI] = getElement(mat, ci, cj);
           cj += dj;
           arI++;
       } while (cj <= maxJ);
-  } else if (arraysEqual(dir, DOWN)) {
+  } else if (dir === DOWN) {
       do {
           array[arI] = getElement(mat, ci, cj);
           ci += di;
           arI++;
       } while (ci <= maxI);
-  } else if (arraysEqual(dir, LEFT)) {
+  } else if (dir === LEFT) {
       do {
           array[arI] = getElement(mat, ci, cj);
           cj += dj;
           arI++;
       } while (cj >= minJ);
-  } else if (arraysEqual(dir, UP)) {
+  } else if (dir === UP) {
       do {
           array[arI] = getElement(mat, ci, cj);
           ci += di;
           arI++;
       } while (ci >= minI);
+  } else {
+    throw new Error(`Unknown direction ${dir}`);
   }
+
   return arI;
 }
 
