@@ -87,23 +87,6 @@ function getDelta(dir) {
 }
 
 /**
- *
- * @param {number[]} a
- * @param {number[]} b
- * @returns {boolean} are equal or what
- */
-function arraysEqual(a, b) {
-  if (a === b) return true;
-  if (a == null || b == null) return false;
-  if (a.length !== b.length) return false;
-
-  for (let i = 0; i < a.length; ++i) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-}
-
-/**
 * @param {CompactMatrix} mat
 * @param {Int16Array} array
 * @param {MatrixSegment} segment
@@ -155,7 +138,6 @@ self.onmessage = function (/** @type {{ data: { command: string; segment: any; m
   const { command, segment, mat, array } = msg.data;
   if (command === "run") {
 
-    // @ts-ignore deno does not recognize that this function is imported from snail-utils
     const arI = copySegment(mat, array, segment);
     // @ts-ignore
     self.postMessage({
