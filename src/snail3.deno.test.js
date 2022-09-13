@@ -1,6 +1,6 @@
 //@ts-check
 import { cases } from "../fixtures/cases.js";
-import { asyncSnail, initWorkerPool } from "./snail3.js";
+import { asyncSnail } from "./snail3.js";
 import { assertEquals } from "https://deno.land/std@0.154.0/testing/asserts.ts";
 
 
@@ -17,25 +17,24 @@ function equalIntArray(ab1, ab2) {
     return true;
 }
 
-initWorkerPool();
-
 cases
     .filter((c) => c.enabled)
     .forEach((c) =>
-        Deno.test(c.name, async () => {
+        Deno.test({
+            name: c.name, fn: async () => {
 
-            const matrix = c.input();
-            const curr = await asyncSnail(matrix);
+                const matrix = c.input();
+                const curr = await asyncSnail(matrix);
 
-            if (!c.noCheck) {
-                const output = c.output();
-                const isEqual = equalIntArray(curr, output);
-                console.log("👀", curr);
-                console.log("🤑", output);
+                if (!c.noCheck) {
+                    const output = c.output();
+                    const isEqual = equalIntArray(curr, output);
 
-                assertEquals(isEqual, true);
-            } else {
-                assertEquals(1, 1);
-            }
+                    assertEquals(isEqual, true);
+                } else {
+                    assertEquals(1, 1);
+                }
+            },
+            sanitizeOps: true
         })
     );

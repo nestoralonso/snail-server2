@@ -103,16 +103,14 @@ export function* snailSegments(m) {
 function runSnailCb(shabMatrix, callback) {
 
     const length = shabMatrix.rows * shabMatrix.cols;
-
     const segments = snailSegments(shabMatrix);
     const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
     const array = new Int16Array(shab);
 
-    const pool = initWorkerPool();
-
     let tasksCompleted = 0;
     const tasks = segments;
     const numTasks = numSegments(shabMatrix.rows, shabMatrix.cols);
+    const pool = newWorkerPool(numTasks);
 
     for (const worker of pool) {
         worker.onmessage = function (/** @type {{ data: { type: string; }; }} */ msg) {
@@ -123,8 +121,11 @@ function runSnailCb(shabMatrix, callback) {
                     const { value: task } = tasks.next();
 
                     if (tasksCompleted === numTasks) {
+                        for (const w of pool) {
+                            w.terminate();
+                        }
                         callback(null, array);
-                    } else if (tasksCompleted < numTasks) {
+                    } else if (tasksCompleted < numTasks && Array.isArray(task)) {
                         this.postMessage({
                             command: "run",
                             segment: task,
@@ -142,11 +143,13 @@ function runSnailCb(shabMatrix, callback) {
     }
 
     function run() {
-        const numStartWorkers = numTasks < NUM_WORKERS ? numTasks : NUM_WORKERS;
-        for (let i = 0; i < numStartWorkers; i++) {
+        for (let i = 0; i < pool.length; i++) {
             const worker = pool[i];
             const next = segments.next();
             const task = next.value;
+            const done = next.done;
+
+            if (done) break;
 
             const segment = task;
             worker.postMessage({
@@ -169,21 +172,22 @@ function runSnailCb(shabMatrix, callback) {
  */
 export async function workersSnail(matrix) {
     const res = await new Promise((resolve => {
-        runSnailCb(matrix, (errs, result) => {
+        runSnailCb(matrix, (_errs, result) => {
             resolve(result);
         })
     }));
 
     console.log(`res length ${res.length}`);
     return res;
-};
+}
 
+const MULTITHREADED_THRESHOLD = 20_000 * 20_000;
 /**
 * @param {CompactMatrix} matrix
 */
 export async function asyncSnail(matrix) {
     const length = matrix.rows * matrix.cols;
-    if (length < 676_000_000) {
+    if (length < MULTITHREADED_THRESHOLD) {
         // use old sequential code, faster for small matrices
         return classicSnail(matrix);
     }
@@ -286,18 +290,18 @@ export function createCMatrix(jsMatrix) {
     const rows = jsMatrix.length;
     const cols = jsMatrix?.[0]?.length ?? 0;
     const sharedArrayBuffer = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * (rows * cols));
-    const mInt32 = new Int16Array(sharedArrayBuffer);
+    const mInt = new Int16Array(sharedArrayBuffer);
 
     for (let i = 0; i < jsMatrix.length; i++) {
         const row = jsMatrix[i];
         for (let j = 0; j < row.length; j++) {
-            mInt32[ix] = row[j];
+            mInt[ix] = row[j];
             ix++;
         }
     }
 
     return {
-        data: mInt32,
+        data: mInt,
         rows,
         cols,
     };
@@ -363,15 +367,18 @@ export function equalIntArrays(ab1, ab2) {
 }
 
 const NUM_WORKERS = 16;
+
 /**
-* @type {Worker[]}
+* @param {number} n
+*
+* @returns {Worker[]} worker pool
 */
-const pool = [];
+export function newWorkerPool(n) {
+    /**  @type {Worker[]} */
+    const pool = [];
 
-export function initWorkerPool() {
-    if (pool.length > 0) return pool;
-
-    for (let i = 0; i < NUM_WORKERS; i++) {
+    const min = Math.min(n, NUM_WORKERS);
+    for (let i = 0; i < min; i++) {
         // classic worker
         // const worker = new Worker("snail-worker.js");
 

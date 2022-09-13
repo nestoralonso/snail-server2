@@ -137,13 +137,16 @@ function copySegment(mat, array, segment) {
 self.onmessage = function (/** @type {{ data: { command: string; segment: any; mat: any; array: any; }; }} */ msg) {
   const { command, segment, mat, array } = msg.data;
   if (command === "run") {
-
+    if (!Array.isArray(segment)) console.log("🙀😮", segment);
     const arI = copySegment(mat, array, segment);
     // @ts-ignore
     self.postMessage({
       type: "result",
       arI,
     });
+  } else if (command === "close") {
+    console.log("😈 Bye");
+    self.close();
   }
 };
 
