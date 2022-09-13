@@ -31,14 +31,15 @@
             <h3 class="title text">Algorithm explanation</h3>
 
             <p class="text">
-                the main strategy in play here, is decoupling the segments to copy from the source matrix, from the
+                The main strategy is decoupling the segments that have to be copied from the
                 actual copy operation.
                 So there is a function in charge of generating all the segments that will be copied and another function
                 that does the actual copying.
-                The copy operation can be made in parallel using Workers (that are Threads), to improve the performance
+                The copy operation can be made in parallel using WebWorkers (similar to Threads), to improve the performance
                 in very large arrays, the workers don't
-                send any data back to the main thread, instead I use a SharedBuffer when all thread can write at the
-                same time to the Same Shared Int16Array
+                send large chunks of data back to the main thread, instead they use a SharedBuffer when all thread can write at the
+                same time to the Same Shared Int16Array. There is no risk of collisions since each worker will write to different parts
+                of the array, and each segment doesn't depend on other segments.
             </p>
 
             <div class="custom-tests-area">
