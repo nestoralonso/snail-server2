@@ -1,106 +1,58 @@
 //@ts-check
 import { copySegment, DOWN, LEFT, NONE_DIR, RIGHT, UP } from "./snail-utils.js";
 
+
+const MULTITHREADED_THRESHOLD = 20_000 * 20_000;
 /**
- * A matrix represented as a SharedArrayBuffer
- * An ArrayBuffer cannot be nested
- * So the matrix will be represented as an m*n array
- *
- * @typedef {Object} CompactMatrix
- * @property {Int16Array} data this will contain the matrix rows side by side
- * @property {number} rows number of rows
- * @property {number} cols number of cols
- *
+* @param {CompactMatrix} matrix
 */
-
-
-/** @typedef {number} DirectionTuple */
-
-/**
- * MatrixSegment an subsegment of a row or column of a matrix
- * to be copied to the destination array
- *
- * @typedef {number} DestArrayIndex current index in the destination array
- * @typedef {number} CurrI the current i position in the matrix
- * @typedef {number} CurrJ the current j position in the matrix
- * @typedef {number} MinI the minimum i coordinate
- * @typedef {number} MaxI the maximum i coordinate
- * @typedef {number} MinJ the minimum j coordinate
- * @typedef {number} MaxJ the maximum j coordinate
- * @typedef {number} SegmentLength segment length
- *
- * @typedef {[DirectionTuple, DestArrayIndex, CurrI, CurrJ, MinI, MaxI, MinJ, MaxJ, SegmentLength]} MatrixSegment
-*/
-
-
-/** @type {MatrixSegment} */
-// @ts-ignore
-export const NONE_SEGMENT = [NONE_DIR, -1, -1, -1, -1, -1, -1, -1, -1];
-
-// key: current direction, value: next direction
-const NextDirectionMap = new Map([
-    [RIGHT, DOWN],
-    [DOWN, LEFT],
-    [LEFT, UP],
-    [UP, RIGHT],
-]);
-
-// just to print direction name for debugging
-const DirectionName = new Map([
-    [RIGHT, "Right"],
-    [DOWN, "Down"],
-    [LEFT, "Left"],
-    [UP, "Up"],
-]);
-
-/**
- * Traverses a matrix in a spiral pattern, returns the result as a generator starting at 0, 0 clockwise direction
- *
- * @param {CompactMatrix} m the source matrix
- * @returns {Generator<MatrixSegment>}
- */
-export function* snailSegments(m) {
-    if (!m || m.rows < 1 || m.cols < 1) {
-        return [];
+export async function asyncSnail(matrix) {
+    const length = matrix.rows * matrix.cols;
+    if (length < MULTITHREADED_THRESHOLD) {
+        // use old sequential code, faster for small matrices
+        return classicSnail(matrix);
     }
 
-    const length = m.rows * m.cols;
-    const i = 0, j = 0;
-    const maxJ = m.cols - 1, maxI = m.rows - 1;
-    const minJ = 0, minI = 0;
-    const curDir = RIGHT;
-
-
-    // initial segment length
-    let segLength = m.cols;
-    let cnt = 0;
-    let arI = 0;
-    /**
-     * @type {MatrixSegment}
-     */
-    let segment = [curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength];
-    do {
-        yield segment;
-
-        arI = segment[1];
-        // @ts-ignore ts doesnt know that segLength is the last index?
-        segLength = segment.at(-1);
-        arI += segLength;
-        segment[1] = arI;
-
-        segment = nextSegment(segment);
-        cnt++;
-    } while (arI < length);
-
-    return cnt;
+    const result = await workersSnail(matrix);
+    return result;
 }
 
+/**
+* @param {CompactMatrix} matrix
+*/
+export async function classicSnail(matrix) {
+    const length = matrix.rows * matrix.cols;
+    const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
+    const array = new Int16Array(shab);
+
+    const segments = snailSegments(matrix);
+    for (const s of segments) {
+        copySegment(matrix, array, s);
+    }
+
+    return await Promise.resolve(array);
+}
+
+/**
+ * @param {CompactMatrix} matrix
+ *
+ */
+ export async function workersSnail(matrix) {
+    const res = await new Promise((resolve => {
+        runSnailCb(matrix, (_errs, result) => {
+            resolve(result);
+        })
+    }));
+
+    console.log(`res length ${res.length}`);
+    return res;
+}
 
 /**
  * @param {CompactMatrix} shabMatrix
  * @param {(errors: any, arrayResult: Int16Array) => void} callback
  */
-function runSnailCb(shabMatrix, callback) {
+ function runSnailCb(shabMatrix, callback) {
 
     const length = shabMatrix.rows * shabMatrix.cols;
     const segments = snailSegments(shabMatrix);
@@ -166,75 +118,56 @@ function runSnailCb(shabMatrix, callback) {
     run();
 }
 
+
 /**
- * @param {CompactMatrix} matrix
+ * Traverses a matrix in a spiral pattern, returns the result as a generator starting at 0, 0 clockwise direction
  *
+ * @param {CompactMatrix} m the source matrix
+ * @returns {Generator<MatrixSegment>}
  */
-export async function workersSnail(matrix) {
-    const res = await new Promise((resolve => {
-        runSnailCb(matrix, (_errs, result) => {
-            resolve(result);
-        })
-    }));
-
-    console.log(`res length ${res.length}`);
-    return res;
-}
-
-const MULTITHREADED_THRESHOLD = 20_000 * 20_000;
-/**
-* @param {CompactMatrix} matrix
-*/
-export async function asyncSnail(matrix) {
-    const length = matrix.rows * matrix.cols;
-    if (length < MULTITHREADED_THRESHOLD) {
-        // use old sequential code, faster for small matrices
-        return classicSnail(matrix);
+ export function* snailSegments(m) {
+    if (!m || m.rows < 1 || m.cols < 1) {
+        return [];
     }
 
-    const result = await workersSnail(matrix);
-    return result;
+    const length = m.rows * m.cols;
+    const i = 0, j = 0;
+    const maxJ = m.cols - 1, maxI = m.rows - 1;
+    const minJ = 0, minI = 0;
+    const curDir = RIGHT;
+
+
+    // initial segment length
+    let segLength = m.cols;
+    let cnt = 0;
+    let arI = 0;
+    /**
+     * @type {MatrixSegment}
+     */
+    let segment = [curDir, arI, i, j, minI, maxI, minJ, maxJ, segLength];
+    do {
+        yield segment;
+
+        arI = segment[1];
+        // @ts-ignore ts doesnt know that segLength is the last index?
+        segLength = segment.at(-1);
+        arI += segLength;
+        segment[1] = arI;
+
+        segment = nextSegment(segment);
+        cnt++;
+    } while (arI < length);
+
+    return cnt;
 }
 
-/**
-* @param {CompactMatrix} matrix
-*/
-export async function classicSnail(matrix) {
-    const length = matrix.rows * matrix.cols;
-    const shab = new SharedArrayBuffer(Int16Array.BYTES_PER_ELEMENT * length);
-    const array = new Int16Array(shab);
-
-    const segments = snailSegments(matrix);
-    for (const s of segments) {
-        copySegment(matrix, array, s);
-    }
-
-    return await Promise.resolve(array);
-}
-
-/**
- * @param {DirectionTuple} dir
- */
-// @ts-ignore
-export function directionToString(dir) {
-    return DirectionName.get(dir);
-}
-
-/**
- * @param {DirectionTuple} currDir
- */
-function nextDirection(currDir) {
-    const res = NextDirectionMap.get(currDir) ?? NONE_DIR;
-
-    return res;
-}
 /**
  *
  * @param {MatrixSegment} segment
 
  * @returns {MatrixSegment}
  */
-function nextSegment([dir, arI, ci, cj, minI, maxI, minJ, maxJ, _length]) {
+ function nextSegment([dir, arI, ci, cj, minI, maxI, minJ, maxJ, _length]) {
     const nextDir = nextDirection(dir);
 
     let length = 0;
@@ -263,6 +196,73 @@ function nextSegment([dir, arI, ci, cj, minI, maxI, minJ, maxJ, _length]) {
     return [nextDir, arI, ci, cj, minI, maxI, minJ, maxJ, length];
 }
 
+/**
+ * A matrix represented as a SharedArrayBuffer
+ * An ArrayBuffer cannot be nested
+ * So the matrix will be represented as an m*n array
+ *
+ * @typedef {Object} CompactMatrix
+ * @property {Int16Array} data this will contain the matrix rows side by side
+ * @property {number} rows number of rows
+ * @property {number} cols number of cols
+ *
+*/
+
+
+/** @typedef {number} DirectionTuple */
+
+/**
+ * MatrixSegment an subsegment of a row or column of a matrix
+ * to be copied to the destination array
+ *
+ * @typedef {number} DestArrayIndex current index in the destination array
+ * @typedef {number} CurrI the current i position in the matrix
+ * @typedef {number} CurrJ the current j position in the matrix
+ * @typedef {number} MinI the minimum i coordinate
+ * @typedef {number} MaxI the maximum i coordinate
+ * @typedef {number} MinJ the minimum j coordinate
+ * @typedef {number} MaxJ the maximum j coordinate
+ * @typedef {number} SegmentLength segment length
+ *
+ * @typedef {[DirectionTuple, DestArrayIndex, CurrI, CurrJ, MinI, MaxI, MinJ, MaxJ, SegmentLength]} MatrixSegment
+*/
+
+
+/** @type {MatrixSegment} */
+export const NONE_SEGMENT = [NONE_DIR, -1, -1, -1, -1, -1, -1, -1, -1];
+
+// key: current direction, value: next direction
+const NextDirectionMap = new Map([
+    [RIGHT, DOWN],
+    [DOWN, LEFT],
+    [LEFT, UP],
+    [UP, RIGHT],
+]);
+
+// just to print direction name for debugging
+const DirectionName = new Map([
+    [RIGHT, "Right"],
+    [DOWN, "Down"],
+    [LEFT, "Left"],
+    [UP, "Up"],
+]);
+
+
+/**
+ * @param {DirectionTuple} dir
+ */
+export function directionToString(dir) {
+    return DirectionName.get(dir);
+}
+
+/**
+ * @param {DirectionTuple} currDir
+ */
+function nextDirection(currDir) {
+    const res = NextDirectionMap.get(currDir) ?? NONE_DIR;
+
+    return res;
+}
 
 /**
 * Estimates the number of segment that will be generated
